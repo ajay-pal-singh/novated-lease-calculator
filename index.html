@@ -100,11 +100,11 @@
             <div class="nl-grid-2">
               <div class="nl-input-group">
                 <label class="nl-label">Rego & Insurance ($/yr)</label>
-                <input type="number" id="nl-cost-rego" value="2200" class="nl-input">
+                <input type="number" id="nl-cost-rego" value="1500" class="nl-input">
               </div>
               <div class="nl-input-group">
                 <label class="nl-label">Servicing & Tyres ($/yr)</label>
-                <input type="number" id="nl-cost-maint" value="1050" class="nl-input">
+                <input type="number" id="nl-cost-maint" value="750" class="nl-input">
               </div>
               <div class="nl-input-group">
                 <label class="nl-label">Fuel / Charging ($/yr)</label>
@@ -251,16 +251,15 @@
   .nl-input-group { margin-bottom: 12px; }
   .nl-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #475569; }
   
-  /* === Animated Segmented Controls === */
+  /* Animated Segmented Controls */
   .nl-segment-control {
-    position: relative; /* Needed for the floating indicator */
+    position: relative;
     display: flex;
     background: #e2e8f0;
     padding: 3px;
     border-radius: 10px;
     gap: 4px;
   }
-  /* The white sliding box */
   .nl-segment-indicator {
     position: absolute;
     top: 3px;
@@ -271,11 +270,11 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     z-index: 1;
-    pointer-events: none; /* Let clicks pass through to the buttons below */
+    pointer-events: none;
   }
   .nl-segment-btn {
     position: relative;
-    z-index: 2; /* Sit on top of the indicator */
+    z-index: 2;
     flex: 1;
     padding: 10px 12px;
     border: none;
@@ -291,12 +290,11 @@
   }
   .nl-segment-btn.active { color: #0f172a; }
 
-  /* Smaller Segmented Control for Results Box */
   .nl-segment-sm { padding: 2px; border-radius: 8px; flex-shrink: 0; }
   .nl-segment-sm .nl-segment-indicator { top: 2px; bottom: 2px; border-radius: 6px; }
   .nl-segment-sm .nl-segment-btn { padding: 6px 10px; font-size: 12.5px; border-radius: 6px; }
 
-  /* Fixed Clean Inputs */
+  /* Fixed Inputs */
   .nl-input {
     width: 100%;
     padding: 10px 12px;
@@ -311,7 +309,6 @@
   }
   .nl-input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
 
-  /* Custom Select Dropdown Styling */
   select.nl-input {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -324,7 +321,6 @@
     cursor: pointer;
   }
 
-  /* Currency Field Wrapper Fix */
   .nl-input-currency {
     display: flex;
     align-items: center;
@@ -355,7 +351,7 @@
   input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   input[type=number] { -moz-appearance: textfield; }
 
-  /* Accordion Upgrades */
+  /* Accordions */
   .nl-accordion summary { cursor: pointer; font-size: 14px; display: flex; justify-content: space-between; align-items: center; list-style: none; user-select: none; }
   .nl-accordion summary:hover .nl-summary-action { color: #1e40af; text-decoration: underline; }
   .nl-accordion summary::-webkit-details-marker { display: none; }
@@ -421,6 +417,35 @@
       });
     });
 
+    // === Dynamic Running Costs based on KMs & Vehicle Type ===
+    function updateDynamicRunningCosts() {
+      const annualKms = parseFloat(document.getElementById('nl-km').value) || 0;
+      const vehType = document.getElementById('nl-veh-type').value;
+      const isBEV = vehType === 'BEV';
+
+      // 1. Fuel / Charging Calculation
+      // Petrol/Diesel: 8L/100km @ $1.90/L | EV Charging: ~18kWh/100km @ $0.30/kWh (~$0.05/km)
+      let annualFuelCost = 0;
+      if (isBEV) {
+        annualFuelCost = annualKms * 0.05; // EV Charging equivalent
+      } else {
+        const fuelLitersPer100km = 8;
+        const fuelPricePerLiter = 1.90;
+        annualFuelCost = (annualKms / 100) * fuelLitersPer100km * fuelPricePerLiter;
+      }
+
+      // 2. Servicing & Tyres (Scales with usage @ 5 cents per km)
+      const servicingCostPerKm = 0.05;
+      const annualServicingCost = annualKms * servicingCostPerKm;
+
+      // Update Form Inputs dynamically
+      document.getElementById('nl-cost-fuel').value = Math.round(annualFuelCost);
+      document.getElementById('nl-cost-maint').value = Math.round(annualServicingCost);
+    }
+
+    // Dynamic cost triggers on KM or Vehicle Type change
+    document.getElementById('nl-km').addEventListener('input', updateDynamicRunningCosts);
+
     // === Animation Logic for Segmented Controls ===
     function updateSegmentIndicator(containerId) {
       const container = document.getElementById(containerId);
@@ -428,11 +453,9 @@
       const indicator = container.querySelector('.nl-segment-indicator');
       
       if (activeBtn && indicator) {
-        // Find the offset and width of the active button relative to the container
         const left = activeBtn.offsetLeft;
         const width = activeBtn.offsetWidth;
         
-        // Slide and resize the white background block
         indicator.style.transform = `translateX(${left}px)`;
         indicator.style.width = `${width}px`;
       }
@@ -449,25 +472,25 @@
           this.classList.add('active');
           hiddenInput.value = this.getAttribute('data-value');
           
-          updateSegmentIndicator(containerId); // Trigger slide
+          if (hiddenInputId === 'nl-veh-type') {
+            updateDynamicRunningCosts(); // Recalculate costs for BEV vs Petrol
+          }
+
+          updateSegmentIndicator(containerId);
           calculateAll();
         });
       });
 
-      // Set initial positions after a tiny delay so the browser finishes painting CSS widths
       setTimeout(() => updateSegmentIndicator(containerId), 50);
     }
 
-    // Attach listeners and animations
     attachSegmentListeners('nl-segment-veh', 'nl-veh-type');
     attachSegmentListeners('nl-segment-freq', 'nl-pay-freq');
 
-    // Make sure animations stay aligned if the user resizes the browser window
     window.addEventListener('resize', () => {
       updateSegmentIndicator('nl-segment-veh');
       updateSegmentIndicator('nl-segment-freq');
     });
-    // ===============================================
 
     function getPayFactor(freq) {
       if (freq === 'weekly') return 52;
@@ -527,7 +550,7 @@
       const adminFeeMonthly = parseFloat(document.getElementById('nl-cost-admin').value) || 0;
       
       const totalRunningAnnual = rego + maint + fuel + (adminFeeMonthly * 12);
-      document.getElementById('nl-summary-running-cost').innerText = `$${totalRunningAnnual.toLocaleString()} / yr`;
+      document.getElementById('nl-summary-running-cost').innerText = `$${Math.round(totalRunningAnnual).toLocaleString()} / yr`;
 
       const gst = Math.min(price / 11, MAX_GST_CLAIM);
       const financed = price - gst;
@@ -602,6 +625,8 @@
       input.addEventListener('change', calculateAll);
     });
 
+    // Initial load setup
+    updateDynamicRunningCosts();
     calculateAll();
 
     // PDF Exports
@@ -633,11 +658,11 @@
         startY: doc.lastAutoTable.finalY + 14,
         head: [['Cost Item', 'Annual Amount']],
         body: [
-          ['Registration & Insurance', `$${calcState.rego.toLocaleString()}`],
-          ['Maintenance & Tyres', `$${calcState.maint.toLocaleString()}`],
-          ['Fuel / Charging', `$${calcState.fuel.toLocaleString()}`],
-          ['Provider Admin / Management Fee', `$${adminAnnual.toLocaleString()}`],
-          ['Total Running Costs', `$${calcState.totalRunningAnnual.toLocaleString()}`]
+          ['Registration & Insurance', `$${Math.round(calcState.rego).toLocaleString()}`],
+          ['Maintenance & Tyres', `$${Math.round(calcState.maint).toLocaleString()}`],
+          ['Fuel / Charging', `$${Math.round(calcState.fuel).toLocaleString()}`],
+          ['Provider Admin / Management Fee', `$${Math.round(adminAnnual).toLocaleString()}`],
+          ['Total Running Costs', `$${Math.round(calcState.totalRunningAnnual).toLocaleString()}`]
         ]
       });
 
