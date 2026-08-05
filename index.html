@@ -18,6 +18,7 @@
           <div class="nl-input-group">
             <label class="nl-label">Vehicle Type</label>
             <div class="nl-segment-control" id="nl-segment-veh">
+              <div class="nl-segment-indicator"></div>
               <button type="button" class="nl-segment-btn active" data-value="BEV">
                 ⚡ Electric (BEV)
               </button>
@@ -152,6 +153,7 @@
           <div class="nl-fbt-badge" id="nl-badge">Eligible for 0% FBT</div>
           
           <div class="nl-segment-control nl-segment-sm" id="nl-segment-freq">
+            <div class="nl-segment-indicator"></div>
             <button type="button" class="nl-segment-btn" data-value="weekly">Weekly</button>
             <button type="button" class="nl-segment-btn active" data-value="fortnightly">Fortnightly</button>
             <button type="button" class="nl-segment-btn" data-value="monthly">Monthly</button>
@@ -205,7 +207,7 @@
   /* Base Container & Grid Layout */
   .nl-calculator {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    max-width: 1180px; /* Expanded for broader desktop view */
+    max-width: 1180px; 
     margin: 0 auto;
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -226,7 +228,7 @@
   }
   @media(min-width: 860px) {
     .nl-layout-grid {
-      grid-template-columns: 1.1fr 1fr; /* Balanced column ratio */
+      grid-template-columns: 1.4fr 1fr;
       align-items: start;
     }
   }
@@ -249,32 +251,49 @@
   .nl-input-group { margin-bottom: 12px; }
   .nl-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #475569; }
   
-  /* Segmented Controls */
+  /* === Animated Segmented Controls === */
   .nl-segment-control {
+    position: relative; /* Needed for the floating indicator */
     display: flex;
     background: #e2e8f0;
     padding: 3px;
     border-radius: 10px;
     gap: 4px;
   }
+  /* The white sliding box */
+  .nl-segment-indicator {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 0;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 1;
+    pointer-events: none; /* Let clicks pass through to the buttons below */
+  }
   .nl-segment-btn {
+    position: relative;
+    z-index: 2; /* Sit on top of the indicator */
     flex: 1;
     padding: 10px 12px;
     border: none;
-    background: transparent;
+    background: transparent !important;
     border-radius: 8px;
     font-size: 13.5px;
     font-weight: 600;
     color: #64748b;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: color 0.3s ease;
     text-align: center;
     white-space: nowrap;
   }
-  .nl-segment-btn.active { background: #ffffff; color: #0f172a; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  .nl-segment-btn.active { color: #0f172a; }
 
   /* Smaller Segmented Control for Results Box */
   .nl-segment-sm { padding: 2px; border-radius: 8px; flex-shrink: 0; }
+  .nl-segment-sm .nl-segment-indicator { top: 2px; bottom: 2px; border-radius: 6px; }
   .nl-segment-sm .nl-segment-btn { padding: 6px 10px; font-size: 12.5px; border-radius: 6px; }
 
   /* Fixed Clean Inputs */
@@ -285,11 +304,25 @@
     border-radius: 8px;
     font-size: 15px;
     box-sizing: border-box;
-    background: #ffffff;
+    background-color: #ffffff;
     color: #0f172a;
     height: 42px;
+    font-family: inherit;
   }
   .nl-input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+
+  /* Custom Select Dropdown Styling */
+  select.nl-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px; 
+    cursor: pointer;
+  }
 
   /* Currency Field Wrapper Fix */
   .nl-input-currency {
@@ -318,21 +351,12 @@
     box-shadow: none !important;
   }
 
-  /* Remove default number arrows */
   input[type=number]::-webkit-inner-spin-button, 
   input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   input[type=number] { -moz-appearance: textfield; }
 
   /* Accordion Upgrades */
-  .nl-accordion summary { 
-    cursor: pointer; 
-    font-size: 14px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    list-style: none;
-    user-select: none;
-  }
+  .nl-accordion summary { cursor: pointer; font-size: 14px; display: flex; justify-content: space-between; align-items: center; list-style: none; user-select: none; }
   .nl-accordion summary:hover .nl-summary-action { color: #1e40af; text-decoration: underline; }
   .nl-accordion summary::-webkit-details-marker { display: none; }
   .nl-accordion-content { margin-top: 14px; padding-top: 14px; border-top: 1px solid #e2e8f0; }
@@ -345,44 +369,17 @@
   .nl-assumptions-grid strong { color: #0f172a; }
 
   /* Results Box */
-  .nl-results-container { 
-    background: #f1f5f9; 
-    border-radius: 12px; 
-    padding: 20px; 
-    margin-top: 0; 
-  }
-  
-  .nl-results-header { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 12px; 
-    align-items: flex-start;
-    margin-bottom: 16px; 
-  }
+  .nl-results-container { background: #f1f5f9; border-radius: 12px; padding: 20px; margin-top: 0; }
+  .nl-results-header { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
   @media(min-width: 480px) {
     .nl-results-header { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   }
 
-  /* Fixed Single Line Badge */
-  .nl-fbt-badge { 
-    padding: 7px 14px; 
-    border-radius: 20px; 
-    font-size: 13px; 
-    font-weight: 700; 
-    white-space: nowrap; 
-    flex-shrink: 0;
-  }
+  .nl-fbt-badge { padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
   .nl-badge-exempt { background: #dcfce7; color: #166534; }
   .nl-badge-standard { background: #fee2e2; color: #991b1b; }
 
-  .nl-hero-card {
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
-    color: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    margin-bottom: 14px;
-  }
+  .nl-hero-card { background: linear-gradient(135deg, #1e40af, #3b82f6); color: #ffffff; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 14px; }
   .nl-hero-label { font-size: 12px; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px; }
   .nl-hero-value { font-size: 38px; font-weight: 800; margin-top: 4px; }
 
@@ -393,23 +390,12 @@
   .nl-text-success { color: #16a34a !important; }
 
   .nl-pdf-actions { display: grid; grid-template-columns: 1fr; gap: 10px; }
-  
   .nl-btn { padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: opacity 0.2s; }
   .nl-btn:hover { opacity: 0.9; }
   .nl-btn-cust { background: #0d9488; color: #fff; }
   .nl-btn-emp { background: #334155; color: #fff; }
 
-  /* Disclaimer Box */
-  .nl-disclaimer {
-    margin-top: 16px;
-    font-size: 11px;
-    color: #64748b;
-    line-height: 1.5;
-    padding: 14px;
-    background: #f8fafc;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-  }
+  .nl-disclaimer { margin-top: 16px; font-size: 11px; color: #64748b; line-height: 1.5; padding: 14px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
   .nl-disclaimer strong { color: #475569; }
 </style>
 
@@ -435,9 +421,26 @@
       });
     });
 
-    // Segmented Button Toggle Handlers
+    // === Animation Logic for Segmented Controls ===
+    function updateSegmentIndicator(containerId) {
+      const container = document.getElementById(containerId);
+      const activeBtn = container.querySelector('.nl-segment-btn.active');
+      const indicator = container.querySelector('.nl-segment-indicator');
+      
+      if (activeBtn && indicator) {
+        // Find the offset and width of the active button relative to the container
+        const left = activeBtn.offsetLeft;
+        const width = activeBtn.offsetWidth;
+        
+        // Slide and resize the white background block
+        indicator.style.transform = `translateX(${left}px)`;
+        indicator.style.width = `${width}px`;
+      }
+    }
+
     function attachSegmentListeners(containerId, hiddenInputId) {
-      const buttons = document.querySelectorAll(`#${containerId} .nl-segment-btn`);
+      const container = document.getElementById(containerId);
+      const buttons = container.querySelectorAll('.nl-segment-btn');
       const hiddenInput = document.getElementById(hiddenInputId);
       
       buttons.forEach(btn => {
@@ -445,13 +448,26 @@
           buttons.forEach(b => b.classList.remove('active'));
           this.classList.add('active');
           hiddenInput.value = this.getAttribute('data-value');
+          
+          updateSegmentIndicator(containerId); // Trigger slide
           calculateAll();
         });
       });
+
+      // Set initial positions after a tiny delay so the browser finishes painting CSS widths
+      setTimeout(() => updateSegmentIndicator(containerId), 50);
     }
 
+    // Attach listeners and animations
     attachSegmentListeners('nl-segment-veh', 'nl-veh-type');
     attachSegmentListeners('nl-segment-freq', 'nl-pay-freq');
+
+    // Make sure animations stay aligned if the user resizes the browser window
+    window.addEventListener('resize', () => {
+      updateSegmentIndicator('nl-segment-veh');
+      updateSegmentIndicator('nl-segment-freq');
+    });
+    // ===============================================
 
     function getPayFactor(freq) {
       if (freq === 'weekly') return 52;
@@ -459,25 +475,16 @@
       return 12;
     }
 
-    /**
-     * Calculates ATO Income Tax, Medicare Levy, MLS, and HECS for FY2026-27
-     * Includes RFBA handling for HECS/MLS Repayment Income.
-     */
     function calculateIncomeTax(taxableIncome, rfba, hasHecs, hasPhi) {
-      // 1. Base Income Tax (FY2026-27 Stage 3)
       let tax = 0;
       if (taxableIncome > 190000) tax = 51370 + (taxableIncome - 190000) * 0.45;
       else if (taxableIncome > 135000) tax = 31020 + (taxableIncome - 135000) * 0.37;
       else if (taxableIncome > 45000) tax = 4020 + (taxableIncome - 45000) * 0.30;
       else if (taxableIncome > 18200) tax = (taxableIncome - 18200) * 0.15;
       
-      // 2. Medicare Levy (2% of taxable income)
       let medicare = taxableIncome * 0.02;
-      
-      // Repayment Income (RI) is used for both MLS and HECS
       const repaymentIncome = taxableIncome + rfba;
 
-      // 3. Medicare Levy Surcharge (MLS) - FY2026-27 Thresholds for Singles
       let mls = 0;
       if (!hasPhi && repaymentIncome > 105000) {
         if (repaymentIncome > 164000) mls = repaymentIncome * 0.015;
@@ -485,11 +492,9 @@
         else mls = repaymentIncome * 0.01;
       }
       
-      // 4. HECS/HELP - FY2026-27 Marginal System
       let hecs = 0;
       if (hasHecs) {
           if (repaymentIncome > 186050) {
-              // Top tier reverts to a flat 10% of total RI
               hecs = repaymentIncome * 0.10; 
           } else if (repaymentIncome > 129717) {
               hecs = 9028.35 + (repaymentIncome - 129717) * 0.17;
@@ -502,7 +507,6 @@
     }
 
     function calculateAll() {
-      // Basic Inputs
       const vehType = document.getElementById('nl-veh-type').value;
       const isBEV = vehType === 'BEV';
       const price = parseFloat(document.getElementById('nl-price').value) || 0;
@@ -514,11 +518,9 @@
       const hasHecs = document.getElementById('nl-hecs').value === 'yes';
       const hasPhi = document.getElementById('nl-phi').value === 'yes';
 
-      // Interest Rate Fetch
       const interestRatePct = parseFloat(document.getElementById('nl-interest').value) || 7.5;
       const interestRateDec = interestRatePct / 100;
 
-      // Running Costs
       const rego = parseFloat(document.getElementById('nl-cost-rego').value) || 0;
       const maint = parseFloat(document.getElementById('nl-cost-maint').value) || 0;
       const fuel = parseFloat(document.getElementById('nl-cost-fuel').value) || 0;
@@ -527,13 +529,11 @@
       const totalRunningAnnual = rego + maint + fuel + (adminFeeMonthly * 12);
       document.getElementById('nl-summary-running-cost').innerText = `$${totalRunningAnnual.toLocaleString()} / yr`;
 
-      // Finance Math
       const gst = Math.min(price / 11, MAX_GST_CLAIM);
       const financed = price - gst;
       const residualPct = ATO_RESIDUALS[termYears];
       const residualVal = financed * residualPct;
 
-      // Update Assumptions Text
       document.getElementById('nl-assump-gst').innerText = `$${Math.round(gst).toLocaleString()}`;
       document.getElementById('nl-assump-financed').innerText = `$${Math.round(financed).toLocaleString()}`;
       document.getElementById('nl-assump-residual').innerText = `${(residualPct * 100).toFixed(2)}%`;
@@ -550,7 +550,6 @@
       }
       const annualFinance = pmt * 12;
 
-      // Deductions
       const totalLeaseAnnual = annualFinance + totalRunningAnnual;
       const isExempt = isBEV && price < LCT_THRESHOLD;
       let preTaxAnnual = totalLeaseAnnual;
@@ -564,7 +563,6 @@
         rfba = price * 0.20 * 1.8868;
       }
 
-      // Tax Math
       const taxBefore = calculateIncomeTax(salary, 0, hasHecs, hasPhi);
       const taxableSalaryWithLease = Math.max(0, salary - preTaxAnnual);
       const taxAfter = calculateIncomeTax(taxableSalaryWithLease, rfba, hasHecs, hasPhi);
@@ -576,14 +574,12 @@
       const takeHomeAfter = (salary - preTaxAnnual - taxAfter - postTaxAnnual) / payCycles;
       const netOutOfPocket = takeHomeBefore - takeHomeAfter;
 
-      // Save global state for PDF generator
       calcState = {
         isBEV, price, gst, financed, termYears, km, salary, freq, payCycles, interestRatePct,
         totalRunningAnnual, totalLeaseAnnual, isExempt, preTaxAnnual, postTaxAnnual,
         annualTaxSaved, netOutOfPocket, rego, maint, fuel, adminFeeMonthly, residualVal
       };
 
-      // UI Update
       const badge = document.getElementById('nl-badge');
       if (isExempt) {
         badge.innerText = "Eligible for 0% FBT";
