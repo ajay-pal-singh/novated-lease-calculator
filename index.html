@@ -205,7 +205,7 @@
   /* Base Container & Grid Layout */
   .nl-calculator {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    max-width: 1040px; /* Expanded for desktop UI */
+    max-width: 1180px; /* Expanded for broader desktop view */
     margin: 0 auto;
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -222,11 +222,11 @@
   .nl-layout-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 28px;
   }
   @media(min-width: 860px) {
     .nl-layout-grid {
-      grid-template-columns: 1.25fr 1fr;
+      grid-template-columns: 1.1fr 1fr; /* Balanced column ratio */
       align-items: start;
     }
   }
@@ -269,12 +269,13 @@
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: center;
+    white-space: nowrap;
   }
   .nl-segment-btn.active { background: #ffffff; color: #0f172a; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
 
   /* Smaller Segmented Control for Results Box */
-  .nl-segment-sm { padding: 2px; border-radius: 8px; }
-  .nl-segment-sm .nl-segment-btn { padding: 6px 12px; font-size: 13px; border-radius: 6px; }
+  .nl-segment-sm { padding: 2px; border-radius: 8px; flex-shrink: 0; }
+  .nl-segment-sm .nl-segment-btn { padding: 6px 10px; font-size: 12.5px; border-radius: 6px; }
 
   /* Fixed Clean Inputs */
   .nl-input {
@@ -347,7 +348,7 @@
   .nl-results-container { 
     background: #f1f5f9; 
     border-radius: 12px; 
-    padding: 18px; 
+    padding: 20px; 
     margin-top: 0; 
   }
   
@@ -359,10 +360,18 @@
     margin-bottom: 16px; 
   }
   @media(min-width: 480px) {
-    .nl-results-header { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .nl-results-header { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   }
 
-  .nl-fbt-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  /* Fixed Single Line Badge */
+  .nl-fbt-badge { 
+    padding: 7px 14px; 
+    border-radius: 20px; 
+    font-size: 13px; 
+    font-weight: 700; 
+    white-space: nowrap; 
+    flex-shrink: 0;
+  }
   .nl-badge-exempt { background: #dcfce7; color: #166534; }
   .nl-badge-standard { background: #fee2e2; color: #991b1b; }
 
