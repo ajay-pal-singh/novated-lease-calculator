@@ -3,8 +3,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
 <div class="nl-calculator">
-  <h2>Novated Lease Calculator</h2>
-  <p class="nl-subtitle">Estimate your real-time tax savings & pay impact (FY2026–27)</p>
+  <div class="nl-branding-header">
+    <h2>Crestwood Group</h2>
+    <p class="nl-subtitle">Flexible Tailored Finance Solutions | Novated Lease Calculator</p>
+  </div>
 
   <div class="nl-layout-grid">
     
@@ -41,17 +43,19 @@
             <div class="nl-input-group">
               <label class="nl-label">Lease Term</label>
               <select id="nl-term" class="nl-input">
-                <option value="1">1 Year</option>
-                <option value="2">2 Years</option>
-                <option value="3">3 Years</option>
-                <option value="4">4 Years</option>
-                <option value="5" selected>5 Years</option>
+                <option value="1">12 Months</option>
+                <option value="2">24 Months</option>
+                <option value="3">36 Months</option>
+                <option value="4">48 Months</option>
+                <option value="5" selected>60 Months</option>
               </select>
             </div>
 
             <div class="nl-input-group">
-              <label class="nl-label">Estimated Annual KM</label>
-              <input type="number" id="nl-km" value="15000" class="nl-input">
+              <label class="nl-label">Residual %</label>
+              <select id="nl-residual" class="nl-input">
+                <!-- Dynamically populated via JS -->
+              </select>
             </div>
           </div>
         </div>
@@ -87,57 +91,19 @@
           </div>
         </div>
 
-        <!-- Collapsible Running Costs -->
-        <details class="nl-card nl-accordion">
-          <summary class="nl-summary">
-            <div class="nl-summary-title">
-              <span>🔧 Estimated Running Costs</span>
-              <strong id="nl-summary-running-cost">$4,000 / yr</strong>
-            </div>
-            <div class="nl-summary-action">Edit ▼</div>
-          </summary>
-          <div class="nl-accordion-content">
-            <div class="nl-grid-2">
-              <div class="nl-input-group">
-                <label class="nl-label">Rego & Insurance ($/yr)</label>
-                <input type="number" id="nl-cost-rego" value="1500" class="nl-input">
-              </div>
-              <div class="nl-input-group">
-                <label class="nl-label">Servicing & Tyres ($/yr)</label>
-                <input type="number" id="nl-cost-maint" value="750" class="nl-input">
-              </div>
-              <div class="nl-input-group">
-                <label class="nl-label">Fuel / Charging ($/yr)</label>
-                <input type="number" id="nl-cost-fuel" value="750" class="nl-input">
-              </div>
-              <div class="nl-input-group">
-                <label class="nl-label">Provider Admin Fee ($/mo)</label>
-                <input type="number" id="nl-cost-admin" value="15" class="nl-input">
-              </div>
-            </div>
-          </div>
-        </details>
-
         <!-- Collapsible Financial Assumptions -->
         <details class="nl-card nl-accordion">
           <summary class="nl-summary">
             <div class="nl-summary-title">
               <span>⚙️ Financial Assumptions & Rules</span>
             </div>
-            <div class="nl-summary-action">View / Edit ▼</div>
+            <div class="nl-summary-action">View ▼</div>
           </summary>
           <div class="nl-accordion-content">
-            <div class="nl-input-group">
-              <label class="nl-label">Finance Interest Rate (% p.a.)</label>
-              <input type="number" id="nl-interest" value="7.5" step="0.1" class="nl-input" style="max-width: 200px;">
-            </div>
-            
-            <div style="margin-top: 16px; border-top: 1px dashed #cbd5e1; padding-top: 12px;"></div>
-            
             <div class="nl-assumptions-grid">
+              <div><span>Finance Rate:</span> <strong>8.74% p.a.</strong></div>
               <div><span>GST Claim Cap:</span> <strong id="nl-assump-gst">$6,334</strong></div>
               <div><span>Amount Financed:</span> <strong id="nl-assump-financed">$50,000</strong></div>
-              <div><span>ATO Residual %:</span> <strong id="nl-assump-residual">28.13%</strong></div>
               <div><span>LCT Threshold (BEV):</span> <strong>$91,661</strong></div>
             </div>
           </div>
@@ -166,6 +132,18 @@
           <div class="nl-hero-value" id="nl-out-of-pocket">$358</div>
         </div>
 
+        <!-- Take Home Comparison -->
+        <div class="nl-grid-2" style="margin-bottom: 16px;">
+          <div class="nl-res-card" style="background: #f8fafc; border-color: #cbd5e1;">
+            <div class="nl-res-label">Current Take-Home</div>
+            <div class="nl-res-val" id="nl-current-takehome" style="font-size: 18px;">$0</div>
+          </div>
+          <div class="nl-res-card" style="background: #eff6ff; border-color: #bfdbfe;">
+            <div class="nl-res-label">New Take-Home</div>
+            <div class="nl-res-val" id="nl-new-takehome" style="font-size: 18px; color: #1e40af;">$0</div>
+          </div>
+        </div>
+
         <div class="nl-summary-grid">
           <div class="nl-res-card">
             <div class="nl-res-label">Tax Savings (Yr)</div>
@@ -183,8 +161,17 @@
           </div>
 
           <div class="nl-res-card">
-            <div class="nl-res-label">Take-Home Impact</div>
+            <div class="nl-res-label">Impact on Pay</div>
             <div class="nl-res-val" id="nl-takehome-impact">-$358</div>
+          </div>
+        </div>
+
+        <!-- Employer Implications Card -->
+        <div class="nl-card" style="margin-top: 16px; margin-bottom: 16px; border: 1px solid #bfdbfe; background: #ffffff;">
+          <div class="nl-card-header" style="font-size: 14px; margin-bottom: 8px;">🏢 Employer Implications</div>
+          <div class="nl-assumptions-grid">
+            <div><span>Monthly Direct Debit:</span> <strong id="nl-emp-dd">$0</strong></div>
+            <div><span>FBT Status:</span> <strong id="nl-emp-fbt" style="color: #0f172a;">...</strong></div>
           </div>
         </div>
 
@@ -217,8 +204,10 @@
     color: #1e293b;
     box-sizing: border-box;
   }
-  .nl-calculator h2 { margin: 0 0 4px 0; font-size: 24px; font-weight: 700; color: #0f172a; }
-  .nl-subtitle { margin: 0 0 20px 0; color: #64748b; font-size: 14px; }
+  
+  .nl-branding-header { border-bottom: 2px solid #1e40af; padding-bottom: 12px; margin-bottom: 24px; }
+  .nl-branding-header h2 { margin: 0 0 4px 0; font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; }
+  .nl-subtitle { margin: 0; color: #64748b; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
   
   /* CSS Grid for Side-by-Side Desktop / Stacked Mobile */
   .nl-layout-grid {
@@ -228,7 +217,7 @@
   }
   @media(min-width: 860px) {
     .nl-layout-grid {
-      grid-template-columns: 1.4fr 1fr;
+      grid-template-columns: 1.3fr 1fr;
       align-items: start;
     }
   }
@@ -397,10 +386,19 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // ATO Variables (FY2026-27)
+    // ATO Variables & Hardcoded Values (FY2026-27)
     const MAX_GST_CLAIM = 6334;
     const LCT_THRESHOLD = 91661;
-    const ATO_RESIDUALS = { 1: 0.6563, 2: 0.5625, 3: 0.4688, 4: 0.3750, 5: 0.2813 };
+    const FIXED_INTEREST_RATE = 8.74; // Hardcoded per requirements
+    
+    // Residual Options Matrix (per client specs)
+    const RESIDUAL_OPTIONS = {
+      1: [0, 10, 20, 30, 40, 50], // 12 Months
+      2: [0, 10, 20, 30, 40, 50], // 24 Months
+      3: [0, 10, 20, 30, 40, 50], // 36 Months
+      4: [0, 10, 20, 30, 40, 45], // 48 Months
+      5: [0, 10, 20, 30, 40]      // 60 Months
+    };
 
     let calcState = {};
 
@@ -412,39 +410,36 @@
         if(this.open) {
           actionText.innerText = "▲ Close";
         } else {
-          actionText.innerText = actionText.parentElement.innerText.includes("Financial") ? "View / Edit ▼" : "Edit ▼";
+          actionText.innerText = actionText.parentElement.innerText.includes("Financial") ? "View ▼" : "Edit ▼";
         }
       });
     });
 
-    // === Dynamic Running Costs based on KMs & Vehicle Type ===
-    function updateDynamicRunningCosts() {
-      const annualKms = parseFloat(document.getElementById('nl-km').value) || 0;
-      const vehType = document.getElementById('nl-veh-type').value;
-      const isBEV = vehType === 'BEV';
-
-      // 1. Fuel / Charging Calculation
-      // Petrol/Diesel: 8L/100km @ $1.90/L | EV Charging: ~18kWh/100km @ $0.30/kWh (~$0.05/km)
-      let annualFuelCost = 0;
-      if (isBEV) {
-        annualFuelCost = annualKms * 0.05; // EV Charging equivalent
+    // Populate Residual Dropdown based on Term
+    function updateResidualOptions() {
+      const term = parseInt(document.getElementById('nl-term').value) || 5;
+      const resSelect = document.getElementById('nl-residual');
+      const currentVal = resSelect.value;
+      
+      const options = RESIDUAL_OPTIONS[term] || [0];
+      resSelect.innerHTML = '';
+      
+      let hasCurrentVal = false;
+      options.forEach(opt => {
+          const optionEl = document.createElement('option');
+          optionEl.value = opt;
+          optionEl.innerText = opt + '%';
+          resSelect.appendChild(optionEl);
+          if(parseInt(currentVal) === opt) hasCurrentVal = true;
+      });
+      
+      // Preserve selection if valid, otherwise select max allowable
+      if (hasCurrentVal && currentVal !== '') {
+          resSelect.value = currentVal;
       } else {
-        const fuelLitersPer100km = 8;
-        const fuelPricePerLiter = 1.90;
-        annualFuelCost = (annualKms / 100) * fuelLitersPer100km * fuelPricePerLiter;
+          resSelect.value = options[options.length - 1]; 
       }
-
-      // 2. Servicing & Tyres (Scales with usage @ 5 cents per km)
-      const servicingCostPerKm = 0.05;
-      const annualServicingCost = annualKms * servicingCostPerKm;
-
-      // Update Form Inputs dynamically
-      document.getElementById('nl-cost-fuel').value = Math.round(annualFuelCost);
-      document.getElementById('nl-cost-maint').value = Math.round(annualServicingCost);
     }
-
-    // Dynamic cost triggers on KM or Vehicle Type change
-    document.getElementById('nl-km').addEventListener('input', updateDynamicRunningCosts);
 
     // === Animation Logic for Segmented Controls ===
     function updateSegmentIndicator(containerId) {
@@ -471,11 +466,6 @@
           buttons.forEach(b => b.classList.remove('active'));
           this.classList.add('active');
           hiddenInput.value = this.getAttribute('data-value');
-          
-          if (hiddenInputId === 'nl-veh-type') {
-            updateDynamicRunningCosts(); // Recalculate costs for BEV vs Petrol
-          }
-
           updateSegmentIndicator(containerId);
           calculateAll();
         });
@@ -534,32 +524,22 @@
       const isBEV = vehType === 'BEV';
       const price = parseFloat(document.getElementById('nl-price').value) || 0;
       const termYears = parseInt(document.getElementById('nl-term').value) || 5;
-      const km = parseFloat(document.getElementById('nl-km').value) || 15000;
+      const residualPct = (parseInt(document.getElementById('nl-residual').value) || 0) / 100;
       
       const salary = parseFloat(document.getElementById('nl-salary').value) || 0;
       const freq = document.getElementById('nl-pay-freq').value;
       const hasHecs = document.getElementById('nl-hecs').value === 'yes';
       const hasPhi = document.getElementById('nl-phi').value === 'yes';
 
-      const interestRatePct = parseFloat(document.getElementById('nl-interest').value) || 7.5;
-      const interestRateDec = interestRatePct / 100;
+      const interestRateDec = FIXED_INTEREST_RATE / 100;
 
-      const rego = parseFloat(document.getElementById('nl-cost-rego').value) || 0;
-      const maint = parseFloat(document.getElementById('nl-cost-maint').value) || 0;
-      const fuel = parseFloat(document.getElementById('nl-cost-fuel').value) || 0;
-      const adminFeeMonthly = parseFloat(document.getElementById('nl-cost-admin').value) || 0;
-      
-      const totalRunningAnnual = rego + maint + fuel + (adminFeeMonthly * 12);
-      document.getElementById('nl-summary-running-cost').innerText = `$${Math.round(totalRunningAnnual).toLocaleString()} / yr`;
-
+      // Finance Math
       const gst = Math.min(price / 11, MAX_GST_CLAIM);
       const financed = price - gst;
-      const residualPct = ATO_RESIDUALS[termYears];
       const residualVal = financed * residualPct;
 
       document.getElementById('nl-assump-gst').innerText = `$${Math.round(gst).toLocaleString()}`;
       document.getElementById('nl-assump-financed').innerText = `$${Math.round(financed).toLocaleString()}`;
-      document.getElementById('nl-assump-residual').innerText = `${(residualPct * 100).toFixed(2)}%`;
 
       const monthlyRate = interestRateDec / 12;
       const totalMonths = termYears * 12;
@@ -571,9 +551,11 @@
       } else {
         pmt = (financed - residualVal) / totalMonths;
       }
+      
+      // Finance Only - No Running Costs
       const annualFinance = pmt * 12;
-
-      const totalLeaseAnnual = annualFinance + totalRunningAnnual;
+      const totalLeaseAnnual = annualFinance; 
+      
       const isExempt = isBEV && price < LCT_THRESHOLD;
       let preTaxAnnual = totalLeaseAnnual;
       let postTaxAnnual = 0;
@@ -586,6 +568,7 @@
         rfba = price * 0.20 * 1.8868;
       }
 
+      // Tax Math
       const taxBefore = calculateIncomeTax(salary, 0, hasHecs, hasPhi);
       const taxableSalaryWithLease = Math.max(0, salary - preTaxAnnual);
       const taxAfter = calculateIncomeTax(taxableSalaryWithLease, rfba, hasHecs, hasPhi);
@@ -597,20 +580,33 @@
       const takeHomeAfter = (salary - preTaxAnnual - taxAfter - postTaxAnnual) / payCycles;
       const netOutOfPocket = takeHomeBefore - takeHomeAfter;
 
+      // Save global state for PDF generator
       calcState = {
-        isBEV, price, gst, financed, termYears, km, salary, freq, payCycles, interestRatePct,
-        totalRunningAnnual, totalLeaseAnnual, isExempt, preTaxAnnual, postTaxAnnual,
-        annualTaxSaved, netOutOfPocket, rego, maint, fuel, adminFeeMonthly, residualVal
+        isBEV, price, gst, financed, termYears, salary, freq, payCycles, interestRatePct: FIXED_INTEREST_RATE,
+        totalLeaseAnnual, isExempt, preTaxAnnual, postTaxAnnual, annualTaxSaved, netOutOfPocket, 
+        residualVal, takeHomeBefore, takeHomeAfter, pmt
       };
 
+      // UI Updates
       const badge = document.getElementById('nl-badge');
       if (isExempt) {
         badge.innerText = "Eligible for 0% FBT";
         badge.className = "nl-fbt-badge nl-badge-exempt";
+        document.getElementById('nl-emp-fbt').innerText = "Exempt (Eligible EV)";
+        document.getElementById('nl-emp-fbt').style.color = "#166534";
       } else {
         badge.innerText = "Standard FBT Applies";
         badge.className = "nl-fbt-badge nl-badge-standard";
+        document.getElementById('nl-emp-fbt').innerText = "Offset to Nil via ECM";
+        document.getElementById('nl-emp-fbt').style.color = "#0f172a";
       }
+
+      // Take Home Comparison Update
+      document.getElementById('nl-current-takehome').innerText = `$${Math.round(takeHomeBefore).toLocaleString()}`;
+      document.getElementById('nl-new-takehome').innerText = `$${Math.round(takeHomeAfter).toLocaleString()}`;
+
+      // Employer Box Update
+      document.getElementById('nl-emp-dd').innerText = `$${Math.round(pmt).toLocaleString()} / month`;
 
       document.getElementById('nl-out-of-pocket').innerText = `$${Math.round(netOutOfPocket).toLocaleString()}`;
       document.getElementById('nl-tax-saved').innerText = `$${Math.round(annualTaxSaved).toLocaleString()}`;
@@ -619,14 +615,23 @@
       document.getElementById('nl-takehome-impact').innerText = `-$${Math.round(netOutOfPocket).toLocaleString()}`;
     }
 
+    // Attach listener specifically for Lease Term to update Residual dropdown
+    document.getElementById('nl-term').addEventListener('change', function() {
+        updateResidualOptions();
+        calculateAll();
+    });
+
     const inputs = document.querySelectorAll('#nlForm input, #nlForm select');
     inputs.forEach(input => {
-      input.addEventListener('input', calculateAll);
-      input.addEventListener('change', calculateAll);
+      // Prevent double trigger on term change
+      if(input.id !== 'nl-term') {
+          input.addEventListener('input', calculateAll);
+          input.addEventListener('change', calculateAll);
+      }
     });
 
     // Initial load setup
-    updateDynamicRunningCosts();
+    updateResidualOptions();
     calculateAll();
 
     // PDF Exports
@@ -637,51 +642,45 @@
       doc.rect(0, 0, 210, 32, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(18);
-      doc.text("Your Novated Lease Quote", 14, 18);
+      doc.text("Crestwood Group | Finance Quote", 14, 18);
+      doc.setFontSize(11);
+      doc.text("Flexible Tailored Finance Solutions", 14, 25);
 
       doc.autoTable({
         startY: 38,
         theme: 'plain',
         body: [
           ['Vehicle Type:', calcState.isBEV ? 'Electric Vehicle (BEV)' : 'Petrol / Diesel', 'Gross Salary:', `$${calcState.salary.toLocaleString()}`],
-          ['Drive-Away Price:', `$${calcState.price.toLocaleString()}`, 'Lease Term:', `${calcState.termYears} Years`],
-          ['FBT Status:', calcState.isExempt ? 'Exempt (0%)' : 'Standard FBT (ECM)', 'Kilometres:', `${calcState.km.toLocaleString()} km/yr`]
-        ]
-      });
-
-      doc.setFontSize(11);
-      doc.setTextColor(30, 41, 59);
-      doc.text("Estimated Annual Running Costs", 14, doc.lastAutoTable.finalY + 10);
-      
-      const adminAnnual = calcState.adminFeeMonthly * 12;
-      doc.autoTable({
-        startY: doc.lastAutoTable.finalY + 14,
-        head: [['Cost Item', 'Annual Amount']],
-        body: [
-          ['Registration & Insurance', `$${Math.round(calcState.rego).toLocaleString()}`],
-          ['Maintenance & Tyres', `$${Math.round(calcState.maint).toLocaleString()}`],
-          ['Fuel / Charging', `$${Math.round(calcState.fuel).toLocaleString()}`],
-          ['Provider Admin / Management Fee', `$${Math.round(adminAnnual).toLocaleString()}`],
-          ['Total Running Costs', `$${Math.round(calcState.totalRunningAnnual).toLocaleString()}`]
+          ['Drive-Away Price:', `$${calcState.price.toLocaleString()}`, 'Lease Term:', `${calcState.termYears * 12} Months`],
+          ['Amount Financed:', `$${Math.round(calcState.financed).toLocaleString()}`, 'FBT Status:', calcState.isExempt ? 'Exempt (0%)' : 'Standard FBT (ECM)']
         ]
       });
 
       const finalY = doc.lastAutoTable.finalY + 12;
-      doc.setFillColor(220, 252, 231);
-      doc.rect(14, finalY, 182, 30, 'F');
-      doc.setTextColor(22, 101, 52);
-      doc.setFontSize(12);
-      doc.text(`Annual Tax Saved: $${Math.round(calcState.annualTaxSaved).toLocaleString()}`, 20, finalY + 10);
+      
+      // New Take-Home Pay Box
+      doc.setFillColor(241, 245, 249);
+      doc.rect(14, finalY, 182, 35, 'F');
+      doc.setTextColor(15, 23, 42);
       
       const freqLabel = calcState.freq === 'weekly' ? 'Weekly' : (calcState.freq === 'fortnightly' ? 'Fortnightly' : 'Monthly');
-      doc.setFontSize(14);
-      doc.text(`Net ${freqLabel} Out-of-Pocket: $${Math.round(calcState.netOutOfPocket).toLocaleString()}`, 20, finalY + 20);
+      doc.setFontSize(12);
+      doc.text("Pay Impact Breakdown", 20, finalY + 10);
+      doc.setFontSize(11);
+      doc.text(`Current ${freqLabel} Take-Home Pay: $${Math.round(calcState.takeHomeBefore).toLocaleString()}`, 20, finalY + 20);
+      doc.setFontSize(13);
+      doc.setTextColor(30, 64, 175);
+      doc.text(`New ${freqLabel} Take-Home Pay: $${Math.round(calcState.takeHomeAfter).toLocaleString()}`, 20, finalY + 30);
 
+      doc.setTextColor(22, 101, 52);
+      doc.setFontSize(12);
+      doc.text(`Estimated Annual Tax Saved: $${Math.round(calcState.annualTaxSaved).toLocaleString()}`, 14, finalY + 50);
+      
       doc.setFontSize(9);
       doc.setTextColor(100, 116, 139);
-      doc.text(`*Quote generated at ${calcState.interestRatePct.toFixed(2)}% p.a. interest. Subject to final lender approval.`, 14, finalY + 40);
+      doc.text(`*Quote generated at ${calcState.interestRatePct.toFixed(2)}% p.a. interest. Subject to final lender approval.`, 14, finalY + 70);
 
-      doc.save("Novated_Lease_Customer_Quote.pdf");
+      doc.save("Crestwood_Finance_Customer_Quote.pdf");
     });
 
     document.getElementById('nl-pdf-emp-btn').addEventListener('click', function() {
@@ -691,7 +690,7 @@
       doc.rect(0, 0, 210, 32, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(18);
-      doc.text("Salary Packaging Schedule", 14, 18);
+      doc.text("Salary Packaging Schedule | Employer Copy", 14, 18);
 
       const preTaxPerCycle = calcState.preTaxAnnual / calcState.payCycles;
       const postTaxPerCycle = calcState.postTaxAnnual / calcState.payCycles;
@@ -703,11 +702,17 @@
         body: [
           ['Pre-Tax Deduction', `$${Math.round(calcState.preTaxAnnual).toLocaleString()}`, `$${Math.round(preTaxPerCycle).toLocaleString()}`],
           ['Post-Tax Deduction (ECM)', `$${Math.round(calcState.postTaxAnnual).toLocaleString()}`, `$${Math.round(postTaxPerCycle).toLocaleString()}`],
-          ['Total Remittance', `$${Math.round(calcState.preTaxAnnual + calcState.postTaxAnnual).toLocaleString()}`, `$${Math.round(preTaxPerCycle + postTaxPerCycle).toLocaleString()}`]
+          ['Total Salary Remittance', `$${Math.round(calcState.preTaxAnnual + calcState.postTaxAnnual).toLocaleString()}`, `$${Math.round(preTaxPerCycle + postTaxPerCycle).toLocaleString()}`]
         ]
       });
 
-      doc.save("Employer_Payroll_Schedule.pdf");
+      const empY = doc.lastAutoTable.finalY + 15;
+      doc.setFontSize(12);
+      doc.setTextColor(15, 23, 42);
+      doc.text(`Monthly Direct Debit to Lender: $${Math.round(calcState.pmt).toLocaleString()}`, 14, empY);
+      doc.text(`FBT Status: ${calcState.isExempt ? 'Exempt (Eligible EV)' : 'Offset to Nil via ECM'}`, 14, empY + 8);
+
+      doc.save("Crestwood_Employer_Schedule.pdf");
     });
   });
 </script>
