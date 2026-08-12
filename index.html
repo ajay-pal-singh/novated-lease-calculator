@@ -2,9 +2,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
+<!-- Import Crestwood Brand Font -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+</style>
+
 <div class="nl-calculator">
   <div class="nl-branding-header">
-    <h2>Crestwood Group</h2>
+    <!-- CRESTWOOD LOGO -->
+    <!-- Replace the src with the actual URL from your WordPress Media Library -->
+    <img src="CrestwoodGroup_PrimaryLogo_Charcoal-scaled.png" alt="Crestwood Group" class="nl-brand-logo">
     <p class="nl-subtitle">Flexible Tailored Finance Solutions | Novated Lease Calculator</p>
   </div>
 
@@ -134,13 +141,14 @@
 
         <!-- Take Home Comparison -->
         <div class="nl-grid-2" style="margin-bottom: 16px;">
-          <div class="nl-res-card" style="background: #f8fafc; border-color: #cbd5e1;">
+          <div class="nl-res-card" style="background: #ffffff; border: 1px solid #e2e8f0;">
             <div class="nl-res-label">Current Take-Home</div>
             <div class="nl-res-val" id="nl-current-takehome" style="font-size: 18px;">$0</div>
           </div>
-          <div class="nl-res-card" style="background: #eff6ff; border-color: #bfdbfe;">
-            <div class="nl-res-label">New Take-Home</div>
-            <div class="nl-res-val" id="nl-new-takehome" style="font-size: 18px; color: #1e40af;">$0</div>
+          <!-- Branded New Take Home Card -->
+          <div class="nl-res-card nl-res-highlight">
+            <div class="nl-res-label" style="color: #1c1c1c; opacity: 0.8;">New Take-Home</div>
+            <div class="nl-res-val" id="nl-new-takehome" style="font-size: 18px; color: #1c1c1c;">$0</div>
           </div>
         </div>
 
@@ -167,17 +175,17 @@
         </div>
 
         <!-- Employer Implications Card -->
-        <div class="nl-card" style="margin-top: 16px; margin-bottom: 16px; border: 1px solid #bfdbfe; background: #ffffff;">
+        <div class="nl-card nl-card-employer">
           <div class="nl-card-header" style="font-size: 14px; margin-bottom: 8px;">🏢 Employer Implications</div>
           <div class="nl-assumptions-grid">
             <div><span>Monthly Direct Debit:</span> <strong id="nl-emp-dd">$0</strong></div>
-            <div><span>FBT Status:</span> <strong id="nl-emp-fbt" style="color: #0f172a;">...</strong></div>
+            <div><span>FBT Status:</span> <strong id="nl-emp-fbt" style="color: #1c1c1c;">...</strong></div>
           </div>
         </div>
 
         <div class="nl-pdf-actions">
-          <button id="nl-pdf-cust-btn" class="nl-btn nl-btn-cust">📄 Download Customer Quote (PDF)</button>
-          <button id="nl-pdf-emp-btn" class="nl-btn nl-btn-emp">📄 Download Employer Schedule (PDF)</button>
+          <button id="nl-pdf-cust-btn" class="nl-btn nl-btn-cust">📄 Download Customer Quote</button>
+          <button id="nl-pdf-emp-btn" class="nl-btn nl-btn-emp">📄 Download Employer Schedule</button>
         </div>
       </div>
 
@@ -192,22 +200,37 @@
 
 <style>
   /* Base Container & Grid Layout */
+  :root {
+    --brand-light-blue: #8cd7f7;
+    --brand-dark: #1c1c1c;
+    --brand-card-bg: #f5f6f8;
+    --brand-border: #e2e8f0;
+  }
+
   .nl-calculator {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Poppins', sans-serif;
     max-width: 1180px; 
     margin: 0 auto;
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+    border: none;
     border-radius: 16px;
     padding: 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    color: #1e293b;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    color: var(--brand-dark);
     box-sizing: border-box;
   }
   
-  .nl-branding-header { border-bottom: 2px solid #1e40af; padding-bottom: 12px; margin-bottom: 24px; }
-  .nl-branding-header h2 { margin: 0 0 4px 0; font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; }
-  .nl-subtitle { margin: 0; color: #64748b; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .nl-branding-header { border-bottom: 2px solid var(--brand-border); padding-bottom: 16px; margin-bottom: 24px; }
+  
+  /* Brand Logo Styling */
+  .nl-brand-logo {
+    max-height: 65px;
+    width: auto;
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .nl-subtitle { margin: 0; color: #64748b; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
   
   /* CSS Grid for Side-by-Side Desktop / Stacked Mobile */
   .nl-layout-grid {
@@ -224,39 +247,40 @@
 
   /* Cards & Layout */
   .nl-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 16px;
+    background: var(--brand-card-bg);
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    border-radius: 16px;
+    padding: 18px;
     margin-bottom: 16px;
   }
-  .nl-card-header { font-weight: 600; font-size: 15px; margin-bottom: 12px; color: #0f172a; }
+  .nl-card-header { font-weight: 600; font-size: 16px; margin-bottom: 14px; color: var(--brand-dark); }
   
   .nl-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media(max-width: 580px) {
     .nl-grid-2 { grid-template-columns: 1fr; }
   }
 
-  .nl-input-group { margin-bottom: 12px; }
+  .nl-input-group { margin-bottom: 14px; }
   .nl-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #475569; }
   
-  /* Animated Segmented Controls */
+  /* CRESTWOOD BRANDED: Animated Segmented Controls */
   .nl-segment-control {
     position: relative;
     display: flex;
     background: #e2e8f0;
-    padding: 3px;
-    border-radius: 10px;
+    padding: 4px;
+    border-radius: 30px; /* Pill Shape */
     gap: 4px;
   }
   .nl-segment-indicator {
     position: absolute;
-    top: 3px;
-    bottom: 3px;
+    top: 4px;
+    bottom: 4px;
     left: 0;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    background: var(--brand-light-blue); /* Crestwood Blue */
+    border-radius: 30px; /* Pill Shape */
+    box-shadow: 0 2px 8px rgba(140, 215, 247, 0.4);
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     z-index: 1;
     pointer-events: none;
@@ -268,8 +292,9 @@
     padding: 10px 12px;
     border: none;
     background: transparent !important;
-    border-radius: 8px;
+    border-radius: 30px;
     font-size: 13.5px;
+    font-family: inherit;
     font-weight: 600;
     color: #64748b;
     cursor: pointer;
@@ -277,34 +302,36 @@
     text-align: center;
     white-space: nowrap;
   }
-  .nl-segment-btn.active { color: #0f172a; }
+  .nl-segment-btn.active { color: var(--brand-dark); } /* Black text on blue pill */
 
-  .nl-segment-sm { padding: 2px; border-radius: 8px; flex-shrink: 0; }
-  .nl-segment-sm .nl-segment-indicator { top: 2px; bottom: 2px; border-radius: 6px; }
-  .nl-segment-sm .nl-segment-btn { padding: 6px 10px; font-size: 12.5px; border-radius: 6px; }
+  .nl-segment-sm { padding: 3px; border-radius: 30px; flex-shrink: 0; }
+  .nl-segment-sm .nl-segment-indicator { top: 3px; bottom: 3px; border-radius: 30px; }
+  .nl-segment-sm .nl-segment-btn { padding: 6px 10px; font-size: 12.5px; border-radius: 30px; }
 
   /* Fixed Inputs */
   .nl-input {
     width: 100%;
-    padding: 10px 12px;
+    padding: 10px 14px;
     border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
     box-sizing: border-box;
     background-color: #ffffff;
-    color: #0f172a;
-    height: 42px;
+    color: var(--brand-dark);
+    height: 44px;
     font-family: inherit;
   }
-  .nl-input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+  .nl-input:focus { outline: none; border-color: var(--brand-light-blue); box-shadow: 0 0 0 3px rgba(140, 215, 247, 0.2); }
 
+  /* Bulletproof Base64 Dropdown Arrow */
   select.nl-input {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYzFjMWMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4=");
     background-repeat: no-repeat;
-    background-position: right 12px center;
+    background-position: right 14px center;
     background-size: 16px;
     padding-right: 40px; 
     cursor: pointer;
@@ -315,13 +342,13 @@
     align-items: center;
     background: #ffffff;
     border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 0 12px;
-    height: 42px;
+    border-radius: 10px;
+    padding: 0 14px;
+    height: 44px;
     box-sizing: border-box;
     transition: all 0.2s ease;
   }
-  .nl-input-currency:focus-within { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+  .nl-input-currency:focus-within { border-color: var(--brand-light-blue); box-shadow: 0 0 0 3px rgba(140, 215, 247, 0.2); }
   .nl-input-currency span { color: #64748b; font-weight: 600; font-size: 15px; margin-right: 6px; user-select: none; }
   .nl-input-currency input {
     width: 100%;
@@ -332,7 +359,8 @@
     margin: 0 !important;
     font-size: 15px;
     font-family: inherit;
-    color: #0f172a;
+    font-weight: 500;
+    color: var(--brand-dark);
     box-shadow: none !important;
   }
 
@@ -342,46 +370,80 @@
 
   /* Accordions */
   .nl-accordion summary { cursor: pointer; font-size: 14px; display: flex; justify-content: space-between; align-items: center; list-style: none; user-select: none; }
-  .nl-accordion summary:hover .nl-summary-action { color: #1e40af; text-decoration: underline; }
+  .nl-accordion summary:hover .nl-summary-action { opacity: 0.7; }
   .nl-accordion summary::-webkit-details-marker { display: none; }
-  .nl-accordion-content { margin-top: 14px; padding-top: 14px; border-top: 1px solid #e2e8f0; }
+  .nl-accordion-content { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--brand-border); }
 
   .nl-summary-title { display: flex; align-items: center; gap: 12px; font-weight: 600; }
-  .nl-summary-action { font-size: 13px; font-weight: 600; color: #2563eb; transition: all 0.2s; }
-  details[open] .nl-summary-action { color: #64748b; text-decoration: none; }
+  .nl-summary-action { font-size: 13px; font-weight: 600; color: var(--brand-dark); transition: all 0.2s; }
 
   .nl-assumptions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; color: #475569; }
-  .nl-assumptions-grid strong { color: #0f172a; }
+  .nl-assumptions-grid strong { color: var(--brand-dark); }
 
   /* Results Box */
-  .nl-results-container { background: #f1f5f9; border-radius: 12px; padding: 20px; margin-top: 0; }
+  .nl-results-container { background: #ffffff; border-radius: 16px; padding: 0; margin-top: 0; }
   .nl-results-header { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
   @media(min-width: 480px) {
-    .nl-results-header { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .nl-results-header { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 16px; }
   }
 
-  .nl-fbt-badge { padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .nl-fbt-badge { padding: 7px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
   .nl-badge-exempt { background: #dcfce7; color: #166534; }
   .nl-badge-standard { background: #fee2e2; color: #991b1b; }
 
-  .nl-hero-card { background: linear-gradient(135deg, #1e40af, #3b82f6); color: #ffffff; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 14px; }
-  .nl-hero-label { font-size: 12px; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px; }
-  .nl-hero-value { font-size: 38px; font-weight: 800; margin-top: 4px; }
+  /* Crestwood Styled Hero Card */
+  .nl-hero-card { 
+    background: var(--brand-dark); 
+    color: #ffffff; 
+    border-radius: 16px; 
+    padding: 24px; 
+    text-align: center; 
+    margin-bottom: 16px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  .nl-hero-label { font-size: 13px; font-weight: 500; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
+  .nl-hero-value { font-size: 42px; font-weight: 800; margin-top: 4px; color: var(--brand-light-blue); }
 
-  .nl-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .nl-res-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; text-align: center; }
-  .nl-res-label { font-size: 12px; color: #64748b; margin-bottom: 6px; }
-  .nl-res-val { font-size: 20px; font-weight: 700; color: #0f172a; }
-  .nl-text-success { color: #16a34a !important; }
+  .nl-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .nl-res-card { background: var(--brand-card-bg); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid transparent; }
+  
+  /* Crestwood Accent Highlight Card */
+  .nl-res-highlight { background: var(--brand-light-blue); border: none; box-shadow: 0 4px 15px rgba(140, 215, 247, 0.4); }
+  
+  .nl-res-label { font-size: 12.5px; color: #64748b; margin-bottom: 6px; font-weight: 500; }
+  .nl-res-val { font-size: 22px; font-weight: 700; color: var(--brand-dark); }
+  .nl-text-success { color: #166534 !important; }
 
-  .nl-pdf-actions { display: grid; grid-template-columns: 1fr; gap: 10px; }
-  .nl-btn { padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: opacity 0.2s; }
-  .nl-btn:hover { opacity: 0.9; }
-  .nl-btn-cust { background: #0d9488; color: #fff; }
-  .nl-btn-emp { background: #334155; color: #fff; }
+  /* Employer Implications specifically styled */
+  .nl-card-employer {
+    background: #ffffff;
+    border-top: 4px solid var(--brand-light-blue);
+    border-left: 1px solid var(--brand-border);
+    border-right: 1px solid var(--brand-border);
+    border-bottom: 1px solid var(--brand-border);
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
 
-  .nl-disclaimer { margin-top: 16px; font-size: 11px; color: #64748b; line-height: 1.5; padding: 14px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
-  .nl-disclaimer strong { color: #475569; }
+  .nl-pdf-actions { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  
+  /* Crestwood Pill Buttons */
+  .nl-btn { 
+    padding: 14px; 
+    border: none; 
+    border-radius: 30px; 
+    font-weight: 600; 
+    font-size: 14px; 
+    font-family: inherit;
+    cursor: pointer; 
+    transition: transform 0.2s ease, opacity 0.2s ease; 
+  }
+  .nl-btn:hover { transform: translateY(-1px); opacity: 0.95; }
+  .nl-btn-cust { background: var(--brand-light-blue); color: var(--brand-dark); }
+  .nl-btn-emp { background: var(--brand-dark); color: #ffffff; }
+
+  .nl-disclaimer { margin-top: 24px; font-size: 11px; color: #64748b; line-height: 1.6; padding: 16px; background: var(--brand-card-bg); border-radius: 12px; }
+  .nl-disclaimer strong { color: var(--brand-dark); }
 </style>
 
 <script>
@@ -593,12 +655,10 @@
         badge.innerText = "Eligible for 0% FBT";
         badge.className = "nl-fbt-badge nl-badge-exempt";
         document.getElementById('nl-emp-fbt').innerText = "Exempt (Eligible EV)";
-        document.getElementById('nl-emp-fbt').style.color = "#166534";
       } else {
         badge.innerText = "Standard FBT Applies";
         badge.className = "nl-fbt-badge nl-badge-standard";
         document.getElementById('nl-emp-fbt').innerText = "Offset to Nil via ECM";
-        document.getElementById('nl-emp-fbt').style.color = "#0f172a";
       }
 
       // Take Home Comparison Update
@@ -638,12 +698,13 @@
     document.getElementById('nl-pdf-cust-btn').addEventListener('click', function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      doc.setFillColor(13, 148, 136);
+      doc.setFillColor(28, 28, 28); // Brand Dark
       doc.rect(0, 0, 210, 32, 'F');
-      doc.setTextColor(255, 255, 255);
+      doc.setTextColor(140, 215, 247); // Brand Light Blue
       doc.setFontSize(18);
       doc.text("Crestwood Group | Finance Quote", 14, 18);
       doc.setFontSize(11);
+      doc.setTextColor(255, 255, 255);
       doc.text("Flexible Tailored Finance Solutions", 14, 25);
 
       doc.autoTable({
@@ -659,9 +720,9 @@
       const finalY = doc.lastAutoTable.finalY + 12;
       
       // New Take-Home Pay Box
-      doc.setFillColor(241, 245, 249);
+      doc.setFillColor(245, 246, 248); // Brand Card BG
       doc.rect(14, finalY, 182, 35, 'F');
-      doc.setTextColor(15, 23, 42);
+      doc.setTextColor(28, 28, 28);
       
       const freqLabel = calcState.freq === 'weekly' ? 'Weekly' : (calcState.freq === 'fortnightly' ? 'Fortnightly' : 'Monthly');
       doc.setFontSize(12);
@@ -669,7 +730,6 @@
       doc.setFontSize(11);
       doc.text(`Current ${freqLabel} Take-Home Pay: $${Math.round(calcState.takeHomeBefore).toLocaleString()}`, 20, finalY + 20);
       doc.setFontSize(13);
-      doc.setTextColor(30, 64, 175);
       doc.text(`New ${freqLabel} Take-Home Pay: $${Math.round(calcState.takeHomeAfter).toLocaleString()}`, 20, finalY + 30);
 
       doc.setTextColor(22, 101, 52);
@@ -686,11 +746,14 @@
     document.getElementById('nl-pdf-emp-btn').addEventListener('click', function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      doc.setFillColor(30, 41, 59);
+      doc.setFillColor(28, 28, 28);
       doc.rect(0, 0, 210, 32, 'F');
-      doc.setTextColor(255, 255, 255);
+      doc.setTextColor(140, 215, 247);
       doc.setFontSize(18);
       doc.text("Salary Packaging Schedule | Employer Copy", 14, 18);
+      doc.setFontSize(11);
+      doc.setTextColor(255, 255, 255);
+      doc.text("Crestwood Group | Flexible Tailored Finance Solutions", 14, 25);
 
       const preTaxPerCycle = calcState.preTaxAnnual / calcState.payCycles;
       const postTaxPerCycle = calcState.postTaxAnnual / calcState.payCycles;
@@ -708,7 +771,7 @@
 
       const empY = doc.lastAutoTable.finalY + 15;
       doc.setFontSize(12);
-      doc.setTextColor(15, 23, 42);
+      doc.setTextColor(28, 28, 28);
       doc.text(`Monthly Direct Debit to Lender: $${Math.round(calcState.pmt).toLocaleString()}`, 14, empY);
       doc.text(`FBT Status: ${calcState.isExempt ? 'Exempt (Eligible EV)' : 'Offset to Nil via ECM'}`, 14, empY + 8);
 
