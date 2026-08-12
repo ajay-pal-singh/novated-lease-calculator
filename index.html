@@ -398,8 +398,14 @@
   .nl-assumptions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; color: #475569; }
   .nl-assumptions-grid strong { color: var(--brand-dark); }
 
-  /* Results Box */
-  .nl-results-container { background: #ffffff; border-radius: 16px; padding: 0; margin-top: 0; }
+  /* RESULTS BOX: RE-ADDED PARTITION BACKGROUND AND PADDING */
+  .nl-results-container { 
+    background: #f8fafc; 
+    border: 1px solid var(--brand-border);
+    border-radius: 16px; 
+    padding: 24px; 
+    margin-top: 0; 
+  }
   .nl-results-header { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
   @media(min-width: 480px) {
     .nl-results-header { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 16px; }
@@ -423,7 +429,7 @@
   .nl-hero-value { font-size: 42px; font-weight: 800; margin-top: 4px; color: var(--brand-light-blue); }
 
   .nl-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-  .nl-res-card { background: var(--brand-card-bg); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid transparent; }
+  .nl-res-card { background: #ffffff; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--brand-border); }
   
   /* Crestwood Accent Highlight Card */
   .nl-res-highlight { background: var(--brand-light-blue); border: none; box-shadow: 0 4px 15px rgba(140, 215, 247, 0.4); }
@@ -460,7 +466,7 @@
   .nl-btn-cust { background: var(--brand-light-blue); color: var(--brand-dark); }
   .nl-btn-emp { background: var(--brand-dark); color: #ffffff; }
 
-  .nl-disclaimer { margin-top: 24px; font-size: 11px; color: #64748b; line-height: 1.6; padding: 16px; background: var(--brand-card-bg); border-radius: 12px; }
+  .nl-disclaimer { margin-top: 24px; font-size: 11px; color: #64748b; line-height: 1.6; padding: 16px; background: #ffffff; border-radius: 12px; border: 1px solid var(--brand-border);}
   .nl-disclaimer strong { color: var(--brand-dark); }
 
   /* ========================================================
@@ -468,6 +474,10 @@
      ======================================================== */
   @media(max-width: 600px) {
     .nl-calculator {
+      padding: 16px;
+    }
+    /* Restored padding to Results Container on mobile */
+    .nl-results-container {
       padding: 16px;
     }
     .nl-branding-header h2 {
@@ -478,19 +488,18 @@
     }
     .nl-segment-btn {
       font-size: 13px;
-      padding: 8px 12px; /* Restored clean padding */
+      padding: 8px 12px; 
     }
     .nl-segment-sm .nl-segment-btn {
       font-size: 11.5px;
-      padding: 6px 10px; /* Restored clean padding */
+      padding: 6px 10px; 
     }
     .nl-res-val {
       font-size: 18px;
     }
     .nl-summary-grid {
-      grid-template-columns: 1fr; /* Stack results on very small screens */
+      grid-template-columns: 1fr; 
     }
-    /* Let the header naturally wrap its contents on very small screens */
     .nl-results-header {
       align-items: stretch; 
     }
@@ -732,7 +741,7 @@
     updateResidualOptions();
     calculateAll();
 
-    // === PDF Generation Logic with HYBRID OPEN/DOWNLOAD Method ===
+    // === REVERTED: Simple Native doc.save() Method ===
     document.getElementById('nl-pdf-cust-btn').addEventListener('click', function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
@@ -803,19 +812,7 @@
       doc.setTextColor(100, 116, 139);
       doc.text(`*Quote generated at ${calcState.interestRatePct.toFixed(2)}% p.a. interest. Subject to final lender approval.`, 14, finalY + 70);
 
-      // Hybrid Download & Fallback to New Tab
-      const blob = doc.output('blob');
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = "Crestwood_Finance_Customer_Quote.pdf";
-      link.target = "_blank"; // Falls back to new tab on strict iOS browsers
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => {
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      }, 100);
+      doc.save("Crestwood_Finance_Customer_Quote.pdf");
     });
 
     document.getElementById('nl-pdf-emp-btn').addEventListener('click', function() {
@@ -876,19 +873,7 @@
       doc.text(`Monthly Direct Debit to Lender: $${Math.round(calcState.pmt).toLocaleString()}`, 14, empY);
       doc.text(`FBT Status: ${calcState.isExempt ? 'Exempt (Eligible EV)' : 'Offset to Nil via ECM'}`, 14, empY + 8);
 
-      // Hybrid Download & Fallback to New Tab
-      const blob = doc.output('blob');
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = "Crestwood_Employer_Schedule.pdf";
-      link.target = "_blank"; // Falls back to new tab on strict iOS browsers
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => {
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      }, 100);
+      doc.save("Crestwood_Employer_Schedule.pdf");
     });
   });
 </script>
