@@ -307,7 +307,7 @@
     position: relative;
     z-index: 2;
     flex: 1;
-    padding: 10px 12px;
+    padding: 10px 16px; /* Increased horizontal padding for pill shape */
     border: none;
     background: transparent !important;
     border-radius: 30px;
@@ -318,14 +318,13 @@
     cursor: pointer;
     transition: color 0.3s ease;
     text-align: center;
-    white-space: normal; /* Allows text to wrap on very small screens */
-    line-height: 1.2;
+    white-space: nowrap; /* Prevent words wrapping in pill */
   }
-  .nl-segment-btn.active { color: var(--brand-dark); } /* Black text on blue pill */
+  .nl-segment-btn.active { color: var(--brand-dark); } 
 
-  .nl-segment-sm { padding: 3px; border-radius: 30px; flex-shrink: 0; }
-  .nl-segment-sm .nl-segment-indicator { top: 3px; bottom: 3px; border-radius: 30px; }
-  .nl-segment-sm .nl-segment-btn { padding: 6px 4px; font-size: 12.5px; border-radius: 30px; }
+  .nl-segment-sm { padding: 4px; border-radius: 30px; flex-shrink: 0; }
+  .nl-segment-sm .nl-segment-indicator { top: 4px; bottom: 4px; border-radius: 30px; }
+  .nl-segment-sm .nl-segment-btn { padding: 6px 14px; font-size: 12.5px; border-radius: 30px; }
 
   /* Fixed Inputs */
   .nl-input {
@@ -478,17 +477,25 @@
       font-size: 36px;
     }
     .nl-segment-btn {
-      font-size: 12px;
-      padding: 8px 4px;
+      font-size: 13px;
+      padding: 8px 12px; /* Restored clean padding */
     }
     .nl-segment-sm .nl-segment-btn {
-      font-size: 11px;
+      font-size: 11.5px;
+      padding: 6px 10px; /* Restored clean padding */
     }
     .nl-res-val {
       font-size: 18px;
     }
     .nl-summary-grid {
       grid-template-columns: 1fr; /* Stack results on very small screens */
+    }
+    /* Let the header naturally wrap its contents on very small screens */
+    .nl-results-header {
+      align-items: stretch; 
+    }
+    .nl-segment-sm {
+      display: flex;
     }
   }
 </style>
@@ -725,7 +732,7 @@
     updateResidualOptions();
     calculateAll();
 
-    // === PDF Generation Logic ===
+    // === PDF Generation Logic with HYBRID OPEN/DOWNLOAD Method ===
     document.getElementById('nl-pdf-cust-btn').addEventListener('click', function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
@@ -796,7 +803,19 @@
       doc.setTextColor(100, 116, 139);
       doc.text(`*Quote generated at ${calcState.interestRatePct.toFixed(2)}% p.a. interest. Subject to final lender approval.`, 14, finalY + 70);
 
-      doc.save("Crestwood_Finance_Customer_Quote.pdf");
+      // Hybrid Download & Fallback to New Tab
+      const blob = doc.output('blob');
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = "Crestwood_Finance_Customer_Quote.pdf";
+      link.target = "_blank"; // Falls back to new tab on strict iOS browsers
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }, 100);
     });
 
     document.getElementById('nl-pdf-emp-btn').addEventListener('click', function() {
@@ -857,7 +876,19 @@
       doc.text(`Monthly Direct Debit to Lender: $${Math.round(calcState.pmt).toLocaleString()}`, 14, empY);
       doc.text(`FBT Status: ${calcState.isExempt ? 'Exempt (Eligible EV)' : 'Offset to Nil via ECM'}`, 14, empY + 8);
 
-      doc.save("Crestwood_Employer_Schedule.pdf");
+      // Hybrid Download & Fallback to New Tab
+      const blob = doc.output('blob');
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = "Crestwood_Employer_Schedule.pdf";
+      link.target = "_blank"; // Falls back to new tab on strict iOS browsers
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }, 100);
     });
   });
 </script>
