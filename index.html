@@ -302,7 +302,7 @@
     text-align: center;
     white-space: nowrap;
   }
-  .nl-segment-btn.active { color: var(--brand-dark); } /* Black text on blue pill */
+  .nl-segment-btn.active { color: var(--brand-dark); }
 
   .nl-segment-sm { padding: 3px; border-radius: 30px; flex-shrink: 0; }
   .nl-segment-sm .nl-segment-indicator { top: 3px; bottom: 3px; border-radius: 30px; }
@@ -324,7 +324,6 @@
   }
   .nl-input:focus { outline: none; border-color: var(--brand-light-blue); box-shadow: 0 0 0 3px rgba(140, 215, 247, 0.2); }
 
-  /* Bulletproof Base64 Dropdown Arrow */
   select.nl-input {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -451,9 +450,9 @@
     // ATO Variables & Hardcoded Values (FY2026-27)
     const MAX_GST_CLAIM = 6334;
     const LCT_THRESHOLD = 91661;
-    const FIXED_INTEREST_RATE = 8.74; // Hardcoded per requirements
+    const FIXED_INTEREST_RATE = 8.74; 
     
-    // Residual Options Matrix (per client specs)
+    // Residual Options Matrix
     const RESIDUAL_OPTIONS = {
       1: [0, 10, 20, 30, 40, 50], // 12 Months
       2: [0, 10, 20, 30, 40, 50], // 24 Months
@@ -464,7 +463,6 @@
 
     let calcState = {};
 
-    // Dynamic Accordion Text
     const accordions = document.querySelectorAll('.nl-accordion');
     accordions.forEach(acc => {
       acc.addEventListener('toggle', function() {
@@ -477,7 +475,6 @@
       });
     });
 
-    // Populate Residual Dropdown based on Term
     function updateResidualOptions() {
       const term = parseInt(document.getElementById('nl-term').value) || 5;
       const resSelect = document.getElementById('nl-residual');
@@ -495,7 +492,6 @@
           if(parseInt(currentVal) === opt) hasCurrentVal = true;
       });
       
-      // Preserve selection if valid, otherwise select max allowable
       if (hasCurrentVal && currentVal !== '') {
           resSelect.value = currentVal;
       } else {
@@ -503,7 +499,6 @@
       }
     }
 
-    // === Animation Logic for Segmented Controls ===
     function updateSegmentIndicator(containerId) {
       const container = document.getElementById(containerId);
       const activeBtn = container.querySelector('.nl-segment-btn.active');
@@ -595,7 +590,6 @@
 
       const interestRateDec = FIXED_INTEREST_RATE / 100;
 
-      // Finance Math
       const gst = Math.min(price / 11, MAX_GST_CLAIM);
       const financed = price - gst;
       const residualVal = financed * residualPct;
@@ -614,7 +608,6 @@
         pmt = (financed - residualVal) / totalMonths;
       }
       
-      // Finance Only - No Running Costs
       const annualFinance = pmt * 12;
       const totalLeaseAnnual = annualFinance; 
       
@@ -630,7 +623,6 @@
         rfba = price * 0.20 * 1.8868;
       }
 
-      // Tax Math
       const taxBefore = calculateIncomeTax(salary, 0, hasHecs, hasPhi);
       const taxableSalaryWithLease = Math.max(0, salary - preTaxAnnual);
       const taxAfter = calculateIncomeTax(taxableSalaryWithLease, rfba, hasHecs, hasPhi);
@@ -642,14 +634,12 @@
       const takeHomeAfter = (salary - preTaxAnnual - taxAfter - postTaxAnnual) / payCycles;
       const netOutOfPocket = takeHomeBefore - takeHomeAfter;
 
-      // Save global state for PDF generator
       calcState = {
         isBEV, price, gst, financed, termYears, salary, freq, payCycles, interestRatePct: FIXED_INTEREST_RATE,
         totalLeaseAnnual, isExempt, preTaxAnnual, postTaxAnnual, annualTaxSaved, netOutOfPocket, 
         residualVal, takeHomeBefore, takeHomeAfter, pmt
       };
 
-      // UI Updates
       const badge = document.getElementById('nl-badge');
       if (isExempt) {
         badge.innerText = "Eligible for 0% FBT";
@@ -661,13 +651,9 @@
         document.getElementById('nl-emp-fbt').innerText = "Offset to Nil via ECM";
       }
 
-      // Take Home Comparison Update
       document.getElementById('nl-current-takehome').innerText = `$${Math.round(takeHomeBefore).toLocaleString()}`;
       document.getElementById('nl-new-takehome').innerText = `$${Math.round(takeHomeAfter).toLocaleString()}`;
-
-      // Employer Box Update
       document.getElementById('nl-emp-dd').innerText = `$${Math.round(pmt).toLocaleString()} / month`;
-
       document.getElementById('nl-out-of-pocket').innerText = `$${Math.round(netOutOfPocket).toLocaleString()}`;
       document.getElementById('nl-tax-saved').innerText = `$${Math.round(annualTaxSaved).toLocaleString()}`;
       document.getElementById('nl-pretax-ded').innerText = `$${Math.round(preTaxAnnual / payCycles).toLocaleString()}`;
@@ -675,7 +661,6 @@
       document.getElementById('nl-takehome-impact').innerText = `-$${Math.round(netOutOfPocket).toLocaleString()}`;
     }
 
-    // Attach listener specifically for Lease Term to update Residual dropdown
     document.getElementById('nl-term').addEventListener('change', function() {
         updateResidualOptions();
         calculateAll();
@@ -683,32 +668,55 @@
 
     const inputs = document.querySelectorAll('#nlForm input, #nlForm select');
     inputs.forEach(input => {
-      // Prevent double trigger on term change
       if(input.id !== 'nl-term') {
           input.addEventListener('input', calculateAll);
           input.addEventListener('change', calculateAll);
       }
     });
 
-    // Initial load setup
     updateResidualOptions();
     calculateAll();
 
-    // PDF Exports
+    // === PDF Generation Logic with Branded Logo ===
     document.getElementById('nl-pdf-cust-btn').addEventListener('click', function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      doc.setFillColor(28, 28, 28); // Brand Dark
-      doc.rect(0, 0, 210, 32, 'F');
-      doc.setTextColor(140, 215, 247); // Brand Light Blue
-      doc.setFontSize(18);
-      doc.text("Crestwood Group | Finance Quote", 14, 18);
+      const logoImg = document.querySelector('.nl-brand-logo');
+
+      // Clear, white background for PDF to match site
+      doc.setFillColor(255, 255, 255);
+      doc.rect(0, 0, 210, 45, 'F');
+
+      // Attempt to load Logo into PDF
+      try {
+        if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
+          doc.addImage(logoImg, 'PNG', 14, 12, 55, 16); 
+        } else {
+          doc.setFontSize(22);
+          doc.setTextColor(28, 28, 28);
+          doc.text("Crestwood Group", 14, 22);
+        }
+      } catch(e) {
+          doc.setFontSize(22);
+          doc.setTextColor(28, 28, 28);
+          doc.text("Crestwood Group", 14, 22);
+      }
+
       doc.setFontSize(11);
-      doc.setTextColor(255, 255, 255);
-      doc.text("Flexible Tailored Finance Solutions", 14, 25);
+      doc.setTextColor(100, 116, 139);
+      doc.text("Flexible Tailored Finance Solutions", 14, 34);
+
+      // Accent Line
+      doc.setDrawColor(140, 215, 247);
+      doc.setLineWidth(1);
+      doc.line(14, 38, 196, 38);
+
+      doc.setFontSize(14);
+      doc.setTextColor(28, 28, 28);
+      doc.text("Customer Finance Quote", 14, 48);
 
       doc.autoTable({
-        startY: 38,
+        startY: 54,
         theme: 'plain',
         body: [
           ['Vehicle Type:', calcState.isBEV ? 'Electric Vehicle (BEV)' : 'Petrol / Diesel', 'Gross Salary:', `$${calcState.salary.toLocaleString()}`],
@@ -719,8 +727,7 @@
 
       const finalY = doc.lastAutoTable.finalY + 12;
       
-      // New Take-Home Pay Box
-      doc.setFillColor(245, 246, 248); // Brand Card BG
+      doc.setFillColor(245, 246, 248);
       doc.rect(14, finalY, 182, 35, 'F');
       doc.setTextColor(28, 28, 28);
       
@@ -746,21 +753,43 @@
     document.getElementById('nl-pdf-emp-btn').addEventListener('click', function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      doc.setFillColor(28, 28, 28);
-      doc.rect(0, 0, 210, 32, 'F');
-      doc.setTextColor(140, 215, 247);
-      doc.setFontSize(18);
-      doc.text("Salary Packaging Schedule | Employer Copy", 14, 18);
+      const logoImg = document.querySelector('.nl-brand-logo');
+
+      doc.setFillColor(255, 255, 255);
+      doc.rect(0, 0, 210, 45, 'F');
+
+      try {
+        if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
+          doc.addImage(logoImg, 'PNG', 14, 12, 55, 16); 
+        } else {
+          doc.setFontSize(22);
+          doc.setTextColor(28, 28, 28);
+          doc.text("Crestwood Group", 14, 22);
+        }
+      } catch(e) {
+          doc.setFontSize(22);
+          doc.setTextColor(28, 28, 28);
+          doc.text("Crestwood Group", 14, 22);
+      }
+
       doc.setFontSize(11);
-      doc.setTextColor(255, 255, 255);
-      doc.text("Crestwood Group | Flexible Tailored Finance Solutions", 14, 25);
+      doc.setTextColor(100, 116, 139);
+      doc.text("Flexible Tailored Finance Solutions", 14, 34);
+
+      doc.setDrawColor(140, 215, 247);
+      doc.setLineWidth(1);
+      doc.line(14, 38, 196, 38);
+
+      doc.setFontSize(14);
+      doc.setTextColor(28, 28, 28);
+      doc.text("Employer Salary Packaging Schedule", 14, 48);
 
       const preTaxPerCycle = calcState.preTaxAnnual / calcState.payCycles;
       const postTaxPerCycle = calcState.postTaxAnnual / calcState.payCycles;
       const freqCap = calcState.freq.charAt(0).toUpperCase() + calcState.freq.slice(1);
 
       doc.autoTable({
-        startY: 40,
+        startY: 54,
         head: [['Deduction Type', 'Annual Total', `Per Pay Cycle (${freqCap})`]],
         body: [
           ['Pre-Tax Deduction', `$${Math.round(calcState.preTaxAnnual).toLocaleString()}`, `$${Math.round(preTaxPerCycle).toLocaleString()}`],
