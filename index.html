@@ -302,7 +302,7 @@
     text-align: center;
     white-space: nowrap;
   }
-  .nl-segment-btn.active { color: var(--brand-dark); }
+  .nl-segment-btn.active { color: var(--brand-dark); } /* Black text on blue pill */
 
   .nl-segment-sm { padding: 3px; border-radius: 30px; flex-shrink: 0; }
   .nl-segment-sm .nl-segment-indicator { top: 3px; bottom: 3px; border-radius: 30px; }
@@ -324,6 +324,7 @@
   }
   .nl-input:focus { outline: none; border-color: var(--brand-light-blue); box-shadow: 0 0 0 3px rgba(140, 215, 247, 0.2); }
 
+  /* Bulletproof Base64 Dropdown Arrow */
   select.nl-input {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -677,20 +678,23 @@
     updateResidualOptions();
     calculateAll();
 
-    // === PDF Generation Logic with Branded Logo ===
+    // === PDF Generation Logic with DYNAMIC LOGO SCALING ===
     document.getElementById('nl-pdf-cust-btn').addEventListener('click', function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       const logoImg = document.querySelector('.nl-brand-logo');
 
-      // Clear, white background for PDF to match site
       doc.setFillColor(255, 255, 255);
       doc.rect(0, 0, 210, 45, 'F');
 
-      // Attempt to load Logo into PDF
       try {
         if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
-          doc.addImage(logoImg, 'PNG', 14, 12, 55, 16); 
+          // Dynamically scale the logo width to prevent squashing/stretching
+          const imgRatio = logoImg.naturalWidth / logoImg.naturalHeight;
+          const targetHeight = 16; // Fixed height
+          const targetWidth = targetHeight * imgRatio; // Calculated perfect width
+          
+          doc.addImage(logoImg, 'PNG', 14, 12, targetWidth, targetHeight); 
         } else {
           doc.setFontSize(22);
           doc.setTextColor(28, 28, 28);
@@ -706,7 +710,6 @@
       doc.setTextColor(100, 116, 139);
       doc.text("Flexible Tailored Finance Solutions", 14, 34);
 
-      // Accent Line
       doc.setDrawColor(140, 215, 247);
       doc.setLineWidth(1);
       doc.line(14, 38, 196, 38);
@@ -760,7 +763,12 @@
 
       try {
         if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
-          doc.addImage(logoImg, 'PNG', 14, 12, 55, 16); 
+          // Dynamically scale the logo width to prevent squashing/stretching
+          const imgRatio = logoImg.naturalWidth / logoImg.naturalHeight;
+          const targetHeight = 16; // Fixed height
+          const targetWidth = targetHeight * imgRatio; // Calculated perfect width
+          
+          doc.addImage(logoImg, 'PNG', 14, 12, targetWidth, targetHeight); 
         } else {
           doc.setFontSize(22);
           doc.setTextColor(28, 28, 28);
