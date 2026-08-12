@@ -1,11 +1,20 @@
-<!-- Load jsPDF & AutoTable via CDN for instant PDF generation -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- This viewport tag is CRITICAL for mobile responsiveness -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Crestwood Novated Lease Calculator</title>
 
-<!-- Import Crestwood Brand Font -->
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-</style>
+  <!-- Load jsPDF & AutoTable via CDN for instant PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- Import Crestwood Brand Font -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+  </style>
+</head>
+<body>
 
 <div class="nl-calculator">
   <div class="nl-branding-header">
@@ -207,6 +216,12 @@
     --brand-border: #e2e8f0;
   }
 
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #f1f5f9; /* For standalone testing */
+  }
+
   .nl-calculator {
     font-family: 'Poppins', sans-serif;
     max-width: 1180px; 
@@ -226,6 +241,7 @@
   .nl-brand-logo {
     max-height: 65px;
     width: auto;
+    max-width: 100%;
     display: block;
     margin-bottom: 10px;
   }
@@ -240,7 +256,7 @@
   }
   @media(min-width: 860px) {
     .nl-layout-grid {
-      grid-template-columns: 1.3fr 1fr;
+      grid-template-columns: 1.2fr 1fr;
       align-items: start;
     }
   }
@@ -257,8 +273,10 @@
   .nl-card-header { font-weight: 600; font-size: 16px; margin-bottom: 14px; color: var(--brand-dark); }
   
   .nl-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  @media(max-width: 580px) {
-    .nl-grid-2 { grid-template-columns: 1fr; }
+  
+  /* Stack 2-column grids on mobile */
+  @media(max-width: 600px) {
+    .nl-grid-2 { grid-template-columns: 1fr; gap: 16px; }
   }
 
   .nl-input-group { margin-bottom: 14px; }
@@ -300,13 +318,14 @@
     cursor: pointer;
     transition: color 0.3s ease;
     text-align: center;
-    white-space: nowrap;
+    white-space: normal; /* Allows text to wrap on very small screens */
+    line-height: 1.2;
   }
   .nl-segment-btn.active { color: var(--brand-dark); } /* Black text on blue pill */
 
   .nl-segment-sm { padding: 3px; border-radius: 30px; flex-shrink: 0; }
   .nl-segment-sm .nl-segment-indicator { top: 3px; bottom: 3px; border-radius: 30px; }
-  .nl-segment-sm .nl-segment-btn { padding: 6px 10px; font-size: 12.5px; border-radius: 30px; }
+  .nl-segment-sm .nl-segment-btn { padding: 6px 4px; font-size: 12.5px; border-radius: 30px; }
 
   /* Fixed Inputs */
   .nl-input {
@@ -444,6 +463,34 @@
 
   .nl-disclaimer { margin-top: 24px; font-size: 11px; color: #64748b; line-height: 1.6; padding: 16px; background: var(--brand-card-bg); border-radius: 12px; }
   .nl-disclaimer strong { color: var(--brand-dark); }
+
+  /* ========================================================
+     MOBILE RESPONSIVENESS OVERRIDES
+     ======================================================== */
+  @media(max-width: 600px) {
+    .nl-calculator {
+      padding: 16px;
+    }
+    .nl-branding-header h2 {
+      font-size: 24px;
+    }
+    .nl-hero-value {
+      font-size: 36px;
+    }
+    .nl-segment-btn {
+      font-size: 12px;
+      padding: 8px 4px;
+    }
+    .nl-segment-sm .nl-segment-btn {
+      font-size: 11px;
+    }
+    .nl-res-val {
+      font-size: 18px;
+    }
+    .nl-summary-grid {
+      grid-template-columns: 1fr; /* Stack results on very small screens */
+    }
+  }
 </style>
 
 <script>
@@ -678,7 +725,7 @@
     updateResidualOptions();
     calculateAll();
 
-    // === PDF Generation Logic with DYNAMIC LOGO SCALING ===
+    // === PDF Generation Logic ===
     document.getElementById('nl-pdf-cust-btn').addEventListener('click', function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
@@ -689,10 +736,9 @@
 
       try {
         if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
-          // Dynamically scale the logo width to prevent squashing/stretching
           const imgRatio = logoImg.naturalWidth / logoImg.naturalHeight;
-          const targetHeight = 16; // Fixed height
-          const targetWidth = targetHeight * imgRatio; // Calculated perfect width
+          const targetHeight = 16; 
+          const targetWidth = targetHeight * imgRatio; 
           
           doc.addImage(logoImg, 'PNG', 14, 12, targetWidth, targetHeight); 
         } else {
@@ -763,10 +809,9 @@
 
       try {
         if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
-          // Dynamically scale the logo width to prevent squashing/stretching
           const imgRatio = logoImg.naturalWidth / logoImg.naturalHeight;
-          const targetHeight = 16; // Fixed height
-          const targetWidth = targetHeight * imgRatio; // Calculated perfect width
+          const targetHeight = 16;
+          const targetWidth = targetHeight * imgRatio;
           
           doc.addImage(logoImg, 'PNG', 14, 12, targetWidth, targetHeight); 
         } else {
@@ -816,3 +861,5 @@
     });
   });
 </script>
+</body>
+</html>
