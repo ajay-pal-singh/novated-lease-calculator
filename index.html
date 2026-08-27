@@ -208,7 +208,7 @@
         </div>
       </div>
 
-      <!-- Added Contact Submission Form -->
+      <!-- Contact Submission Form with Validations -->
       <div class="nl-card nl-card-contact" style="margin-top: 16px; border: 1px solid var(--brand-border); background: #ffffff;">
         <div class="nl-card-header" style="font-size: 15px; margin-bottom: 4px;">📩 Ready to proceed?</div>
         <div style="font-size: 12px; color: #64748b; margin-bottom: 14px; line-height: 1.4;">
@@ -219,14 +219,14 @@
           <input type="text" id="nl-contact-name" class="nl-input" placeholder="Full Name">
         </div>
         <div class="nl-input-group">
-          <input type="tel" id="nl-contact-mobile" class="nl-input" placeholder="Mobile Number">
+          <input type="tel" id="nl-contact-mobile" class="nl-input" placeholder="Mobile Number (e.g. 0412345678)">
         </div>
         <div class="nl-input-group" style="margin-bottom: 16px;">
           <input type="email" id="nl-contact-email" class="nl-input" placeholder="Email Address">
         </div>
         
-        <!-- Placeholder action button to be hooked up by web dev -->
-        <button type="button" class="nl-btn nl-btn-cust" style="width: 100%; font-size: 15px; padding: 16px;" onclick="alert('Enquiry functionality will need to be securely connected by a web developer to send email directly.')">Submit Enquiry</button>
+        <!-- Disabled by default, controlled by JS -->
+        <button type="button" id="nl-submit-btn" class="nl-btn nl-btn-cust" style="width: 100%; font-size: 15px; padding: 16px; opacity: 0.5; cursor: not-allowed;" disabled onclick="alert('Enquiry functionality will need to be securely connected by a web developer to send email directly.')">Submit Enquiry</button>
       </div>
 
       <!-- Legal Disclaimer -->
@@ -494,6 +494,9 @@
   .nl-btn:hover { transform: translateY(-1px); opacity: 0.95; }
   .nl-btn-cust { background: var(--brand-light-blue); color: var(--brand-dark); }
   .nl-btn-emp { background: var(--brand-dark); color: #ffffff; }
+  
+  /* Disabled button state */
+  .nl-btn:disabled { transform: none; opacity: 0.5; cursor: not-allowed; }
 
   .nl-disclaimer { margin-top: 24px; font-size: 11px; color: #64748b; line-height: 1.6; padding: 16px; background: #ffffff; border-radius: 12px; border: 1px solid var(--brand-border);}
   .nl-disclaimer strong { color: var(--brand-dark); }
@@ -756,6 +759,34 @@
 
     updateResidualOptions();
     calculateAll();
+
+    // === Contact Form Validation Logic ===
+    function validateContactForm() {
+      const name = document.getElementById('nl-contact-name').value.trim();
+      const mobile = document.getElementById('nl-contact-mobile').value.trim().replace(/\s+/g, ''); // strip spaces for validation
+      const email = document.getElementById('nl-contact-email').value.trim();
+      const submitBtn = document.getElementById('nl-submit-btn');
+
+      // Simple validations
+      const isNameValid = name.length > 0;
+      const isMobileValid = /^04\d{8}$/.test(mobile); // AU Mobile: starts with 04, 10 digits total
+      const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      if (isNameValid && isMobileValid && isEmailValid) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+      } else {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.5';
+        submitBtn.style.cursor = 'not-allowed';
+      }
+    }
+
+    // Attach validation to inputs
+    ['nl-contact-name', 'nl-contact-mobile', 'nl-contact-email'].forEach(id => {
+      document.getElementById(id).addEventListener('input', validateContactForm);
+    });
 
     // === PDF Generation Logic ===
     document.getElementById('nl-pdf-cust-btn').addEventListener('click', function() {
