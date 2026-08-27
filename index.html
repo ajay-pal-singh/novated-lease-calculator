@@ -53,6 +53,8 @@
               <span>$</span>
               <input type="number" id="nl-price" value="55000" placeholder="55000">
             </div>
+            <!-- Added GST Note -->
+            <div style="font-size: 11.5px; color: #64748b; margin-top: 6px; font-weight: 500;">* this includes GST and Stamp</div>
           </div>
 
           <div class="nl-grid-2">
@@ -72,6 +74,22 @@
               <select id="nl-residual" class="nl-input">
                 <!-- Dynamically populated via JS -->
               </select>
+            </div>
+          </div>
+
+          <!-- Added Payment Deferral UI -->
+          <div class="nl-input-group" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--brand-border);">
+            <label class="nl-label" style="font-size: 14.5px; color: var(--brand-dark); margin-bottom: 2px;">Payment Start</label>
+            <div style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Choose when lease payments begin</div>
+            <div class="nl-radio-group">
+              <label class="nl-radio-label">
+                <input type="radio" name="nl-deferral" value="immediate" onchange="calculateAll()" checked>
+                <span>Start immediately (no deferral)</span>
+              </label>
+              <label class="nl-radio-label">
+                <input type="radio" name="nl-deferral" value="deferred" onchange="calculateAll()">
+                <span>Start in 1 month (1-month deferral)</span>
+              </label>
             </div>
           </div>
         </div>
@@ -133,30 +151,22 @@
         
         <div class="nl-results-header">
           <div class="nl-fbt-badge" id="nl-badge">Eligible for 0% FBT</div>
-          
-          <div class="nl-segment-control nl-segment-sm" id="nl-segment-freq">
-            <div class="nl-segment-indicator"></div>
-            <button type="button" class="nl-segment-btn" data-value="weekly">Weekly</button>
-            <button type="button" class="nl-segment-btn active" data-value="fortnightly">Fortnightly</button>
-            <button type="button" class="nl-segment-btn" data-value="monthly">Monthly</button>
-          </div>
-          <input type="hidden" id="nl-pay-freq" value="fortnightly">
         </div>
 
         <div class="nl-hero-card">
-          <div class="nl-hero-label">Net Out-of-Pocket Cost</div>
+          <div class="nl-hero-label">Net Monthly Out-of-Pocket Cost</div>
           <div class="nl-hero-value" id="nl-out-of-pocket">$358</div>
         </div>
 
         <!-- Take Home Comparison -->
         <div class="nl-grid-2" style="margin-bottom: 16px;">
           <div class="nl-res-card" style="background: #ffffff; border: 1px solid #e2e8f0;">
-            <div class="nl-res-label">Current Take-Home</div>
+            <div class="nl-res-label">Current Monthly Take-Home</div>
             <div class="nl-res-val" id="nl-current-takehome" style="font-size: 18px;">$0</div>
           </div>
           <!-- Branded New Take Home Card -->
           <div class="nl-res-card nl-res-highlight">
-            <div class="nl-res-label" style="color: #1c1c1c; opacity: 0.8;">New Take-Home</div>
+            <div class="nl-res-label" style="color: #1c1c1c; opacity: 0.8;">New Monthly Take-Home</div>
             <div class="nl-res-val" id="nl-new-takehome" style="font-size: 18px; color: #1c1c1c;">$0</div>
           </div>
         </div>
@@ -178,7 +188,7 @@
           </div>
 
           <div class="nl-res-card">
-            <div class="nl-res-label">Impact on Pay</div>
+            <div class="nl-res-label">Monthly Pay Impact</div>
             <div class="nl-res-val" id="nl-takehome-impact">-$358</div>
           </div>
         </div>
@@ -196,6 +206,27 @@
           <button id="nl-pdf-cust-btn" class="nl-btn nl-btn-cust">📄 Download Customer Quote</button>
           <button id="nl-pdf-emp-btn" class="nl-btn nl-btn-emp">📄 Download Employer Schedule</button>
         </div>
+      </div>
+
+      <!-- Added Contact Submission Form -->
+      <div class="nl-card nl-card-contact" style="margin-top: 16px; border: 1px solid var(--brand-border); background: #ffffff;">
+        <div class="nl-card-header" style="font-size: 15px; margin-bottom: 4px;">📩 Ready to proceed?</div>
+        <div style="font-size: 12px; color: #64748b; margin-bottom: 14px; line-height: 1.4;">
+          Submit your details below and a finance specialist will get back to you in 1-2 business hours.
+        </div>
+        
+        <div class="nl-input-group">
+          <input type="text" id="nl-contact-name" class="nl-input" placeholder="Full Name">
+        </div>
+        <div class="nl-input-group">
+          <input type="tel" id="nl-contact-mobile" class="nl-input" placeholder="Mobile Number">
+        </div>
+        <div class="nl-input-group" style="margin-bottom: 16px;">
+          <input type="email" id="nl-contact-email" class="nl-input" placeholder="Email Address">
+        </div>
+        
+        <!-- Placeholder action button to be hooked up by web dev -->
+        <button type="button" class="nl-btn nl-btn-cust" style="width: 100%; font-size: 15px; padding: 16px;" onclick="alert('Enquiry functionality will be securely connected by your web developer to email Zoe directly.')">Submit Enquiry</button>
       </div>
 
       <!-- Legal Disclaimer -->
@@ -282,6 +313,11 @@
   .nl-input-group { margin-bottom: 14px; }
   .nl-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #475569; }
   
+  /* Radio Buttons Styling */
+  .nl-radio-group { display: flex; flex-direction: column; gap: 10px; }
+  .nl-radio-label { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 500; color: var(--brand-dark); cursor: pointer; }
+  .nl-radio-label input[type="radio"] { accent-color: var(--brand-light-blue); width: 18px; height: 18px; cursor: pointer; margin: 0; }
+
   /* CRESTWOOD BRANDED: Animated Segmented Controls */
   .nl-segment-control {
     position: relative;
@@ -321,10 +357,6 @@
     white-space: nowrap; /* Prevent words wrapping in pill */
   }
   .nl-segment-btn.active { color: var(--brand-dark); } 
-
-  .nl-segment-sm { padding: 4px; border-radius: 30px; flex-shrink: 0; }
-  .nl-segment-sm .nl-segment-indicator { top: 4px; bottom: 4px; border-radius: 30px; }
-  .nl-segment-sm .nl-segment-btn { padding: 6px 14px; font-size: 12.5px; border-radius: 30px; }
 
   /* Fixed Inputs */
   .nl-input {
@@ -398,7 +430,7 @@
   .nl-assumptions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; color: #475569; }
   .nl-assumptions-grid strong { color: var(--brand-dark); }
 
-  /* RESULTS BOX: RE-ADDED PARTITION BACKGROUND AND PADDING */
+  /* RESULTS BOX: PARTITION BACKGROUND AND PADDING */
   .nl-results-container { 
     background: #f8fafc; 
     border: 1px solid var(--brand-border);
@@ -406,10 +438,7 @@
     padding: 24px; 
     margin-top: 0; 
   }
-  .nl-results-header { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
-  @media(min-width: 480px) {
-    .nl-results-header { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  }
+  .nl-results-header { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; margin-bottom: 16px; }
 
   .nl-fbt-badge { padding: 7px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
   .nl-badge-exempt { background: #dcfce7; color: #166534; }
@@ -476,7 +505,6 @@
     .nl-calculator {
       padding: 16px;
     }
-    /* Restored padding to Results Container on mobile */
     .nl-results-container {
       padding: 16px;
     }
@@ -490,21 +518,11 @@
       font-size: 13px;
       padding: 8px 12px; 
     }
-    .nl-segment-sm .nl-segment-btn {
-      font-size: 11.5px;
-      padding: 6px 10px; 
-    }
     .nl-res-val {
       font-size: 18px;
     }
     .nl-summary-grid {
       grid-template-columns: 1fr; 
-    }
-    .nl-results-header {
-      align-items: stretch; 
-    }
-    .nl-segment-sm {
-      display: flex;
     }
   }
 </style>
@@ -596,18 +614,10 @@
     }
 
     attachSegmentListeners('nl-segment-veh', 'nl-veh-type');
-    attachSegmentListeners('nl-segment-freq', 'nl-pay-freq');
 
     window.addEventListener('resize', () => {
       updateSegmentIndicator('nl-segment-veh');
-      updateSegmentIndicator('nl-segment-freq');
     });
-
-    function getPayFactor(freq) {
-      if (freq === 'weekly') return 52;
-      if (freq === 'fortnightly') return 26;
-      return 12;
-    }
 
     function calculateIncomeTax(taxableIncome, rfba, hasHecs, hasPhi) {
       let tax = 0;
@@ -646,9 +656,11 @@
       const price = parseFloat(document.getElementById('nl-price').value) || 0;
       const termYears = parseInt(document.getElementById('nl-term').value) || 5;
       const residualPct = (parseInt(document.getElementById('nl-residual').value) || 0) / 100;
+      const deferralType = document.querySelector('input[name="nl-deferral"]:checked').value;
       
       const salary = parseFloat(document.getElementById('nl-salary').value) || 0;
-      const freq = document.getElementById('nl-pay-freq').value;
+      // Frequency is strictly locked to Monthly now
+      const payCycles = 12; 
       const hasHecs = document.getElementById('nl-hecs').value === 'yes';
       const hasPhi = document.getElementById('nl-phi').value === 'yes';
 
@@ -668,6 +680,11 @@
       if (monthlyRate > 0) {
         pmt = (financed - (residualVal * Math.pow(1 + monthlyRate, -totalMonths))) * 
               (monthlyRate / (1 - Math.pow(1 + monthlyRate, -totalMonths)));
+              
+        // Apply Deferral Math (Advance vs Arrears)
+        if (deferralType === 'immediate') {
+          pmt = pmt / (1 + monthlyRate); 
+        }
       } else {
         pmt = (financed - residualVal) / totalMonths;
       }
@@ -692,16 +709,15 @@
       const taxAfter = calculateIncomeTax(taxableSalaryWithLease, rfba, hasHecs, hasPhi);
 
       const annualTaxSaved = taxBefore - taxAfter;
-      const payCycles = getPayFactor(freq);
 
       const takeHomeBefore = (salary - taxBefore) / payCycles;
       const takeHomeAfter = (salary - preTaxAnnual - taxAfter - postTaxAnnual) / payCycles;
       const netOutOfPocket = takeHomeBefore - takeHomeAfter;
 
       calcState = {
-        isBEV, price, gst, financed, termYears, salary, freq, payCycles, interestRatePct: FIXED_INTEREST_RATE,
+        isBEV, price, gst, financed, termYears, salary, payCycles, interestRatePct: FIXED_INTEREST_RATE,
         totalLeaseAnnual, isExempt, preTaxAnnual, postTaxAnnual, annualTaxSaved, netOutOfPocket, 
-        residualVal, takeHomeBefore, takeHomeAfter, pmt
+        residualVal, takeHomeBefore, takeHomeAfter, pmt, deferralType
       };
 
       const badge = document.getElementById('nl-badge');
@@ -741,7 +757,7 @@
     updateResidualOptions();
     calculateAll();
 
-    // === REVERTED: Simple Native doc.save() Method ===
+    // === PDF Generation Logic ===
     document.getElementById('nl-pdf-cust-btn').addEventListener('click', function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
@@ -786,7 +802,7 @@
         body: [
           ['Vehicle Type:', calcState.isBEV ? 'Electric Vehicle (BEV)' : 'Petrol / Diesel', 'Gross Salary:', `$${calcState.salary.toLocaleString()}`],
           ['Drive-Away Price:', `$${calcState.price.toLocaleString()}`, 'Lease Term:', `${calcState.termYears * 12} Months`],
-          ['Amount Financed:', `$${Math.round(calcState.financed).toLocaleString()}`, 'FBT Status:', calcState.isExempt ? 'Exempt (0%)' : 'Standard FBT (ECM)']
+          ['Amount Financed:', `$${Math.round(calcState.financed).toLocaleString()}`, 'Payment Start:', calcState.deferralType === 'immediate' ? 'Immediate' : '1-Month Deferral']
         ]
       });
 
@@ -796,13 +812,12 @@
       doc.rect(14, finalY, 182, 35, 'F');
       doc.setTextColor(28, 28, 28);
       
-      const freqLabel = calcState.freq === 'weekly' ? 'Weekly' : (calcState.freq === 'fortnightly' ? 'Fortnightly' : 'Monthly');
       doc.setFontSize(12);
       doc.text("Pay Impact Breakdown", 20, finalY + 10);
       doc.setFontSize(11);
-      doc.text(`Current ${freqLabel} Take-Home Pay: $${Math.round(calcState.takeHomeBefore).toLocaleString()}`, 20, finalY + 20);
+      doc.text(`Current Monthly Take-Home Pay: $${Math.round(calcState.takeHomeBefore).toLocaleString()}`, 20, finalY + 20);
       doc.setFontSize(13);
-      doc.text(`New ${freqLabel} Take-Home Pay: $${Math.round(calcState.takeHomeAfter).toLocaleString()}`, 20, finalY + 30);
+      doc.text(`New Monthly Take-Home Pay: $${Math.round(calcState.takeHomeAfter).toLocaleString()}`, 20, finalY + 30);
 
       doc.setTextColor(22, 101, 52);
       doc.setFontSize(12);
@@ -855,11 +870,10 @@
 
       const preTaxPerCycle = calcState.preTaxAnnual / calcState.payCycles;
       const postTaxPerCycle = calcState.postTaxAnnual / calcState.payCycles;
-      const freqCap = calcState.freq.charAt(0).toUpperCase() + calcState.freq.slice(1);
 
       doc.autoTable({
         startY: 54,
-        head: [['Deduction Type', 'Annual Total', `Per Pay Cycle (${freqCap})`]],
+        head: [['Deduction Type', 'Annual Total', `Per Pay Cycle (Monthly)`]],
         body: [
           ['Pre-Tax Deduction', `$${Math.round(calcState.preTaxAnnual).toLocaleString()}`, `$${Math.round(preTaxPerCycle).toLocaleString()}`],
           ['Post-Tax Deduction (ECM)', `$${Math.round(calcState.postTaxAnnual).toLocaleString()}`, `$${Math.round(postTaxPerCycle).toLocaleString()}`],
