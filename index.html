@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- This viewport tag is CRITICAL for mobile responsiveness -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Crestwood Novated Lease Calculator</title>
-
-  <!-- Load jsPDF & AutoTable via CDN for instant PDF generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-
-  <!-- Import Crestwood Brand Font -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
   </style>
@@ -18,32 +13,23 @@
 
 <div class="nl-calculator">
   <div class="nl-branding-header">
-    <!-- CRESTWOOD LOGO -->
-    <!-- Replace the src with the actual URL from your WordPress Media Library -->
     <img src="CrestwoodGroup_PrimaryLogo_Charcoal-scaled.png" alt="Crestwood Group" class="nl-brand-logo">
     <p class="nl-subtitle">Flexible Tailored Finance Solutions | EV Novated Lease Calculator</p>
   </div>
 
   <div class="nl-layout-grid">
-    
-    <!-- LEFT COLUMN: INPUTS -->
     <div class="nl-form-column">
       <form id="nlForm" onsubmit="event.preventDefault();">
-        
-        <!-- Vehicle Section -->
         <div class="nl-card">
           <div class="nl-card-header">🚗 Vehicle Details</div>
-
           <div class="nl-input-group">
             <label class="nl-label">Vehicle Drive-away Price</label>
             <div class="nl-input-currency">
               <span>$</span>
               <input type="number" id="nl-price" value="55000" placeholder="55000">
             </div>
-            <!-- GST Note -->
             <div style="font-size: 11.5px; color: #64748b; margin-top: 6px; font-weight: 500;">* this includes GST and Stamp</div>
           </div>
-
           <div class="nl-grid-2">
             <div class="nl-input-group">
               <label class="nl-label">Lease Term</label>
@@ -55,16 +41,11 @@
                 <option value="5" selected>60 Months</option>
               </select>
             </div>
-
             <div class="nl-input-group">
               <label class="nl-label">Residual %</label>
-              <select id="nl-residual" class="nl-input">
-                <!-- Dynamically populated via JS -->
-              </select>
+              <select id="nl-residual" class="nl-input"></select>
             </div>
           </div>
-
-          <!-- Payment Deferral UI -->
           <div class="nl-input-group" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--brand-border);">
             <label class="nl-label" style="font-size: 14.5px; color: var(--brand-dark); margin-bottom: 2px;">Payment Start</label>
             <div style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Choose when lease payments begin</div>
@@ -81,10 +62,8 @@
           </div>
         </div>
 
-        <!-- Income & Tax Section -->
         <div class="nl-card">
           <div class="nl-card-header">💼 Income & Deductions</div>
-          
           <div class="nl-input-group">
             <label class="nl-label">Annual Gross Salary</label>
             <div class="nl-input-currency">
@@ -92,7 +71,6 @@
               <input type="number" id="nl-salary" value="110000" placeholder="110000">
             </div>
           </div>
-
           <div class="nl-grid-2">
             <div class="nl-input-group">
               <label class="nl-label">HELP/HECS Debt?</label>
@@ -101,7 +79,6 @@
                 <option value="yes">Yes</option>
               </select>
             </div>
-
             <div class="nl-input-group">
               <label class="nl-label">Private Health?</label>
               <select id="nl-phi" class="nl-input">
@@ -112,19 +89,16 @@
           </div>
         </div>
 
-        <!-- Collapsible Financial Assumptions -->
         <details class="nl-card nl-accordion">
           <summary class="nl-summary">
-            <div class="nl-summary-title">
-              <span>⚙️ Financial Assumptions & Rules</span>
-            </div>
+            <div class="nl-summary-title"><span>⚙️ Financial Assumptions & Rules</span></div>
             <div class="nl-summary-action">View ▼</div>
           </summary>
           <div class="nl-accordion-content">
             <div class="nl-assumptions-grid">
               <div><span>Vehicle Type:</span> <strong>Electric (BEV)</strong></div>
               <div><span>Finance Rate:</span> <strong>8.74% p.a.</strong></div>
-              <div><span>GST Claim Cap:</span> <strong id="nl-assump-gst">$6,334</strong></div>
+              <div><span>GST Claim Cap:</span> <strong id="nl-assump-gst">$6,353</strong></div>
               <div><span>Amount Financed:</span> <strong id="nl-assump-financed">$50,000</strong></div>
             </div>
           </div>
@@ -132,70 +106,47 @@
       </form>
     </div>
 
-    <!-- RIGHT COLUMN: RESULTS -->
     <div class="nl-results-column">
       <div class="nl-results-container">
-        
         <div class="nl-results-header">
           <div class="nl-fbt-badge" id="nl-badge">Eligible for 0% FBT</div>
-          
-          <div class="nl-segment-control nl-segment-sm" id="nl-segment-freq">
-            <div class="nl-segment-indicator"></div>
-            <button type="button" class="nl-segment-btn" data-value="weekly">Weekly</button>
-            <button type="button" class="nl-segment-btn active" data-value="fortnightly">Fortnightly</button>
-            <button type="button" class="nl-segment-btn" data-value="monthly">Monthly</button>
-          </div>
-          <input type="hidden" id="nl-pay-freq" value="monthly"> <!-- Hardcoded logic uses monthly -->
         </div>
-
-        <!-- NEW: Over $90k Warning Box -->
         <div id="nl-price-warning" style="display: none; background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 20px; border-radius: 12px; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
           <strong>* Please note</strong> we can't quote on this calculator for a purchase price above $90,000 due to FBT implications. Please submit an enquiry below and our team will be in touch.
         </div>
-
-        <!-- WRAPPER: Hides when over 90k -->
         <div id="nl-results-content">
           <div class="nl-hero-card">
             <div class="nl-hero-label">Net Monthly Out-of-Pocket Cost</div>
             <div class="nl-hero-value" id="nl-out-of-pocket">$358</div>
           </div>
-
-          <!-- Take Home Comparison -->
           <div class="nl-grid-2" style="margin-bottom: 16px;">
             <div class="nl-res-card" style="background: #ffffff; border: 1px solid #e2e8f0;">
               <div class="nl-res-label">Current Monthly Take-Home</div>
               <div class="nl-res-val" id="nl-current-takehome" style="font-size: 18px;">$0</div>
             </div>
-            <!-- Branded New Take Home Card -->
             <div class="nl-res-card nl-res-highlight">
               <div class="nl-res-label" style="color: #1c1c1c; opacity: 0.8;">New Monthly Take-Home</div>
               <div class="nl-res-val" id="nl-new-takehome" style="font-size: 18px; color: #1c1c1c;">$0</div>
             </div>
           </div>
-
           <div class="nl-summary-grid">
             <div class="nl-res-card">
               <div class="nl-res-label">Tax Savings (Yr)</div>
               <div class="nl-res-val nl-text-success" id="nl-tax-saved">$4,383</div>
             </div>
-
             <div class="nl-res-card">
               <div class="nl-res-label">Pre-Tax Deduct</div>
               <div class="nl-res-val" id="nl-pretax-ded">$527</div>
             </div>
-
             <div class="nl-res-card">
               <div class="nl-res-label">Post-Tax (ECM)</div>
               <div class="nl-res-val" id="nl-posttax-ded">$0</div>
             </div>
-
             <div class="nl-res-card">
               <div class="nl-res-label">Monthly Pay Impact</div>
               <div class="nl-res-val" id="nl-takehome-impact">-$358</div>
             </div>
           </div>
-
-          <!-- Employer Implications Card -->
           <div class="nl-card nl-card-employer">
             <div class="nl-card-header" style="font-size: 14px; margin-bottom: 8px;">🏢 Employer Implications</div>
             <div class="nl-assumptions-grid">
@@ -203,7 +154,6 @@
               <div><span>FBT Status:</span> <strong id="nl-emp-fbt" style="color: #1c1c1c;">Exempt (Eligible EV)</strong></div>
             </div>
           </div>
-
           <div class="nl-pdf-actions">
             <button id="nl-pdf-cust-btn" class="nl-btn nl-btn-cust">📄 Download Customer Quote</button>
             <button id="nl-pdf-emp-btn" class="nl-btn nl-btn-emp">📄 Download Employer Schedule</button>
@@ -211,13 +161,11 @@
         </div>
       </div>
 
-      <!-- Contact Submission Form with Validations -->
       <div class="nl-card nl-card-contact" style="margin-top: 16px; border: 1px solid var(--brand-border); background: #ffffff;">
         <div class="nl-card-header" style="font-size: 15px; margin-bottom: 4px;">📩 Ready to proceed?</div>
         <div style="font-size: 12px; color: #64748b; margin-bottom: 14px; line-height: 1.4;">
           Submit your details below and a finance specialist will get back to you in 1-2 business hours.
         </div>
-        
         <div class="nl-input-group">
           <input type="text" id="nl-contact-name" class="nl-input" placeholder="Full Name">
         </div>
@@ -227,333 +175,100 @@
         <div class="nl-input-group" style="margin-bottom: 16px;">
           <input type="email" id="nl-contact-email" class="nl-input" placeholder="Email Address">
         </div>
-        
-        <!-- Disabled by default, controlled by JS -->
         <button type="button" id="nl-submit-btn" class="nl-btn nl-btn-cust" style="width: 100%; font-size: 15px; padding: 16px; opacity: 0.5; cursor: not-allowed;" disabled onclick="alert('Enquiry functionality will need to be securely connected by a web developer to send email directly.')">Submit Enquiry</button>
       </div>
 
-      <!-- Legal Disclaimer -->
       <div class="nl-disclaimer">
         <strong>Important Information:</strong> This calculator is an educational tool designed for illustrative purposes using FY2026–27 ATO tax rates. It does not constitute financial or taxation advice, nor is it a formal offer of credit. Calculations are estimates and exclude personal credit assessment criteria. While eligible electric vehicles (BEVs) are exempt from standard FBT, they still generate a Reportable Fringe Benefit Amount (RFBA) which is factored into HECS and Medicare Levy Surcharge calculations here. We strongly recommend seeking independent financial advice tailored to your personal circumstances before entering a novated lease.
       </div>
     </div>
-    
   </div>
 </div>
 
 <style>
-  /* Base Container & Grid Layout */
   :root {
     --brand-light-blue: #8cd7f7;
     --brand-dark: #1c1c1c;
     --brand-card-bg: #f5f6f8;
     --brand-border: #e2e8f0;
   }
-
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: #f1f5f9; /* For standalone testing */
-  }
-
-  .nl-calculator {
-    font-family: 'Poppins', sans-serif;
-    max-width: 1180px; 
-    margin: 0 auto;
-    background: #ffffff;
-    border: none;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
-    color: var(--brand-dark);
-    box-sizing: border-box;
-  }
-  
+  body { margin: 0; padding: 0; background-color: #f1f5f9; }
+  .nl-calculator { font-family: 'Poppins', sans-serif; max-width: 1180px; margin: 0 auto; background: #ffffff; border: none; border-radius: 16px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); color: var(--brand-dark); box-sizing: border-box; }
   .nl-branding-header { border-bottom: 2px solid var(--brand-border); padding-bottom: 16px; margin-bottom: 24px; }
-  
-  /* Brand Logo Styling */
-  .nl-brand-logo {
-    max-height: 65px;
-    width: auto;
-    max-width: 100%;
-    display: block;
-    margin-bottom: 10px;
-  }
-  
+  .nl-brand-logo { max-height: 65px; width: auto; max-width: 100%; display: block; margin-bottom: 10px; }
   .nl-subtitle { margin: 0; color: #64748b; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-  
-  /* CSS Grid for Side-by-Side Desktop / Stacked Mobile */
-  .nl-layout-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-  @media(min-width: 860px) {
-    .nl-layout-grid {
-      grid-template-columns: 1.2fr 1fr;
-      align-items: start;
-    }
-  }
-
-  /* Cards & Layout */
-  .nl-card {
-    background: var(--brand-card-bg);
-    border: none;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-    border-radius: 16px;
-    padding: 18px;
-    margin-bottom: 16px;
-  }
+  .nl-layout-grid { display: grid; grid-template-columns: 1fr; gap: 28px; }
+  @media(min-width: 860px) { .nl-layout-grid { grid-template-columns: 1.2fr 1fr; align-items: start; } }
+  .nl-card { background: var(--brand-card-bg); border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-radius: 16px; padding: 18px; margin-bottom: 16px; }
   .nl-card-header { font-weight: 600; font-size: 16px; margin-bottom: 14px; color: var(--brand-dark); }
-  
   .nl-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  
-  /* Stack 2-column grids on mobile */
-  @media(max-width: 600px) {
-    .nl-grid-2 { grid-template-columns: 1fr; gap: 16px; }
-  }
-
+  @media(max-width: 600px) { .nl-grid-2 { grid-template-columns: 1fr; gap: 16px; } }
   .nl-input-group { margin-bottom: 14px; }
   .nl-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #475569; }
-  
-  /* Radio Buttons Styling */
   .nl-radio-group { display: flex; flex-direction: column; gap: 10px; }
   .nl-radio-label { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 500; color: var(--brand-dark); cursor: pointer; }
   .nl-radio-label input[type="radio"] { accent-color: var(--brand-light-blue); width: 18px; height: 18px; cursor: pointer; margin: 0; }
-
-  /* CRESTWOOD BRANDED: Animated Segmented Controls */
-  .nl-segment-control {
-    position: relative;
-    display: flex;
-    background: #e2e8f0;
-    padding: 4px;
-    border-radius: 30px; /* Pill Shape */
-    gap: 4px;
-  }
-  .nl-segment-indicator {
-    position: absolute;
-    top: 4px;
-    bottom: 4px;
-    left: 0;
-    background: var(--brand-light-blue); /* Crestwood Blue */
-    border-radius: 30px; /* Pill Shape */
-    box-shadow: 0 2px 8px rgba(140, 215, 247, 0.4);
-    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    z-index: 1;
-    pointer-events: none;
-  }
-  .nl-segment-btn {
-    position: relative;
-    z-index: 2;
-    flex: 1;
-    padding: 10px 16px; /* Increased horizontal padding for pill shape */
-    border: none;
-    background: transparent !important;
-    border-radius: 30px;
-    font-size: 13.5px;
-    font-family: inherit;
-    font-weight: 600;
-    color: #64748b;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    text-align: center;
-    white-space: nowrap; /* Prevent words wrapping in pill */
-  }
-  .nl-segment-btn.active { color: var(--brand-dark); } 
-
-  .nl-segment-sm { padding: 4px; border-radius: 30px; flex-shrink: 0; }
-  .nl-segment-sm .nl-segment-indicator { top: 4px; bottom: 4px; border-radius: 30px; }
-  .nl-segment-sm .nl-segment-btn { padding: 6px 14px; font-size: 12.5px; border-radius: 30px; }
-
-  /* Fixed Inputs */
-  .nl-input {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    box-sizing: border-box;
-    background-color: #ffffff;
-    color: var(--brand-dark);
-    height: 44px;
-    font-family: inherit;
-  }
+  .nl-input { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; font-weight: 500; box-sizing: border-box; background-color: #ffffff; color: var(--brand-dark); height: 44px; font-family: inherit; }
   .nl-input:focus { outline: none; border-color: var(--brand-light-blue); box-shadow: 0 0 0 3px rgba(140, 215, 247, 0.2); }
-
-  /* Bulletproof Base64 Dropdown Arrow */
-  select.nl-input {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYzFjMWMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4=");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    background-size: 16px;
-    padding-right: 40px; 
-    cursor: pointer;
-  }
-
-  .nl-input-currency {
-    display: flex;
-    align-items: center;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    padding: 0 14px;
-    height: 44px;
-    box-sizing: border-box;
-    transition: all 0.2s ease;
-  }
+  select.nl-input { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYzFjMWMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4="); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; cursor: pointer; }
+  .nl-input-currency { display: flex; align-items: center; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0 14px; height: 44px; box-sizing: border-box; transition: all 0.2s ease; }
   .nl-input-currency:focus-within { border-color: var(--brand-light-blue); box-shadow: 0 0 0 3px rgba(140, 215, 247, 0.2); }
   .nl-input-currency span { color: #64748b; font-weight: 600; font-size: 15px; margin-right: 6px; user-select: none; }
-  .nl-input-currency input {
-    width: 100%;
-    border: none !important;
-    outline: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    font-size: 15px;
-    font-family: inherit;
-    font-weight: 500;
-    color: var(--brand-dark);
-    box-shadow: none !important;
-  }
-
-  input[type=number]::-webkit-inner-spin-button, 
-  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .nl-input-currency input { width: 100%; border: none !important; outline: none !important; background: transparent !important; padding: 0 !important; margin: 0 !important; font-size: 15px; font-family: inherit; font-weight: 500; color: var(--brand-dark); box-shadow: none !important; }
+  input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   input[type=number] { -moz-appearance: textfield; }
-
-  /* Accordions */
   .nl-accordion summary { cursor: pointer; font-size: 14px; display: flex; justify-content: space-between; align-items: center; list-style: none; user-select: none; }
   .nl-accordion summary:hover .nl-summary-action { opacity: 0.7; }
   .nl-accordion summary::-webkit-details-marker { display: none; }
   .nl-accordion-content { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--brand-border); }
-
   .nl-summary-title { display: flex; align-items: center; gap: 12px; font-weight: 600; }
   .nl-summary-action { font-size: 13px; font-weight: 600; color: var(--brand-dark); transition: all 0.2s; }
-
   .nl-assumptions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; color: #475569; }
   .nl-assumptions-grid strong { color: var(--brand-dark); }
-
-  /* RESULTS BOX: PARTITION BACKGROUND AND PADDING */
-  .nl-results-container { 
-    background: #f8fafc; 
-    border: 1px solid var(--brand-border);
-    border-radius: 16px; 
-    padding: 24px; 
-    margin-top: 0; 
-  }
+  .nl-results-container { background: #f8fafc; border: 1px solid var(--brand-border); border-radius: 16px; padding: 24px; margin-top: 0; }
   .nl-results-header { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; margin-bottom: 16px; }
-
   .nl-fbt-badge { padding: 7px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
   .nl-badge-exempt { background: #dcfce7; color: #166534; }
   .nl-badge-standard { background: #fee2e2; color: #991b1b; }
-
-  /* Crestwood Styled Hero Card */
-  .nl-hero-card { 
-    background: var(--brand-dark); 
-    color: #ffffff; 
-    border-radius: 16px; 
-    padding: 24px; 
-    text-align: center; 
-    margin-bottom: 16px; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  }
+  .nl-hero-card { background: var(--brand-dark); color: #ffffff; border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
   .nl-hero-label { font-size: 13px; font-weight: 500; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
   .nl-hero-value { font-size: 42px; font-weight: 800; margin-top: 4px; color: var(--brand-light-blue); }
-
   .nl-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .nl-res-card { background: #ffffff; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--brand-border); }
-  
-  /* Crestwood Accent Highlight Card */
   .nl-res-highlight { background: var(--brand-light-blue); border: none; box-shadow: 0 4px 15px rgba(140, 215, 247, 0.4); }
-  
   .nl-res-label { font-size: 12.5px; color: #64748b; margin-bottom: 6px; font-weight: 500; }
   .nl-res-val { font-size: 22px; font-weight: 700; color: var(--brand-dark); }
   .nl-text-success { color: #166534 !important; }
-
-  /* Employer Implications specifically styled */
-  .nl-card-employer {
-    background: #ffffff;
-    border-top: 4px solid var(--brand-light-blue);
-    border-left: 1px solid var(--brand-border);
-    border-right: 1px solid var(--brand-border);
-    border-bottom: 1px solid var(--brand-border);
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-
+  .nl-card-employer { background: #ffffff; border-top: 4px solid var(--brand-light-blue); border-left: 1px solid var(--brand-border); border-right: 1px solid var(--brand-border); border-bottom: 1px solid var(--brand-border); margin-top: 20px; margin-bottom: 20px; }
   .nl-pdf-actions { display: grid; grid-template-columns: 1fr; gap: 12px; }
-  
-  /* Crestwood Pill Buttons */
-  .nl-btn { 
-    padding: 14px; 
-    border: none; 
-    border-radius: 30px; 
-    font-weight: 600; 
-    font-size: 14px; 
-    font-family: inherit;
-    cursor: pointer; 
-    transition: transform 0.2s ease, opacity 0.2s ease; 
-  }
+  .nl-btn { padding: 14px; border: none; border-radius: 30px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer; transition: transform 0.2s ease, opacity 0.2s ease; }
   .nl-btn:hover { transform: translateY(-1px); opacity: 0.95; }
   .nl-btn-cust { background: var(--brand-light-blue); color: var(--brand-dark); }
   .nl-btn-emp { background: var(--brand-dark); color: #ffffff; }
-  
-  /* Disabled button state */
   .nl-btn:disabled { transform: none; opacity: 0.5; cursor: not-allowed; }
-
   .nl-disclaimer { margin-top: 24px; font-size: 11px; color: #64748b; line-height: 1.6; padding: 16px; background: #ffffff; border-radius: 12px; border: 1px solid var(--brand-border);}
   .nl-disclaimer strong { color: var(--brand-dark); }
-
-  /* ========================================================
-     MOBILE RESPONSIVENESS OVERRIDES
-     ======================================================== */
   @media(max-width: 600px) {
-    .nl-calculator {
-      padding: 16px;
-    }
-    .nl-results-container {
-      padding: 16px;
-    }
-    .nl-branding-header h2 {
-      font-size: 24px;
-    }
-    .nl-hero-value {
-      font-size: 36px;
-    }
-    .nl-segment-btn {
-      font-size: 13px;
-      padding: 8px 12px; 
-    }
-    .nl-segment-sm .nl-segment-btn {
-      font-size: 11.5px;
-      padding: 6px 10px; 
-    }
-    .nl-res-val {
-      font-size: 18px;
-    }
-    .nl-summary-grid {
-      grid-template-columns: 1fr; 
-    }
+    .nl-calculator { padding: 16px; }
+    .nl-results-container { padding: 16px; }
+    .nl-branding-header h2 { font-size: 24px; }
+    .nl-hero-value { font-size: 36px; }
+    .nl-res-val { font-size: 18px; }
+    .nl-summary-grid { grid-template-columns: 1fr; }
   }
 </style>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // ATO Variables & Hardcoded Values (FY2026-27)
-    const MAX_GST_CLAIM = 6334;
+    const MAX_GST_CLAIM = 6353;
     const FIXED_INTEREST_RATE = 8.74; 
     
-    // Residual Options Matrix
     const RESIDUAL_OPTIONS = {
-      1: [0, 10, 20, 30, 40, 50], // 12 Months
-      2: [0, 10, 20, 30, 40, 50], // 24 Months
-      3: [0, 10, 20, 30, 40, 50], // 36 Months
-      4: [0, 10, 20, 30, 40, 45], // 48 Months
-      5: [0, 10, 20, 30, 40]      // 60 Months
+      1: [0, 10, 20, 30, 40, 50],
+      2: [0, 10, 20, 30, 40, 50],
+      3: [0, 10, 20, 30, 40, 50],
+      4: [0, 10, 20, 30, 40, 45],
+      5: [0, 10, 20, 30, 40]
     };
 
     let calcState = {};
@@ -596,6 +311,7 @@
 
     function calculateIncomeTax(taxableIncome, rfba, hasHecs, hasPhi) {
       let tax = 0;
+      
       if (taxableIncome > 190000) tax = 51370 + (taxableIncome - 190000) * 0.45;
       else if (taxableIncome > 135000) tax = 31020 + (taxableIncome - 135000) * 0.37;
       else if (taxableIncome > 45000) tax = 4020 + (taxableIncome - 45000) * 0.30;
@@ -612,41 +328,33 @@
       }
       
       let hecs = 0;
-      if (hasHecs) {
-          if (repaymentIncome > 186050) {
-              hecs = repaymentIncome * 0.10; 
-          } else if (repaymentIncome > 129717) {
-              hecs = 9028.35 + (repaymentIncome - 129717) * 0.17;
-          } else if (repaymentIncome > 69528) {
-              hecs = (repaymentIncome - 69528) * 0.15;
-          }
+      if (hasHecs && repaymentIncome > 69528) {
+          const band1 = Math.max(0, Math.min(repaymentIncome, 129717) - 69528) * 0.15;
+          const band2 = Math.max(0, repaymentIncome - 129717) * 0.17;
+          const marginal = band1 + band2;
+          hecs = Math.min(marginal, repaymentIncome * 0.10);
       }
       
       return tax + medicare + mls + hecs;
     }
 
     function calculateAll() {
-      // Hardcoded to BEV
       const isBEV = true; 
       const price = parseFloat(document.getElementById('nl-price').value) || 0;
       
-      // DOM Elements for $90k Guardrail
       const warningEl = document.getElementById('nl-price-warning');
       const contentEl = document.getElementById('nl-results-content');
-      const freqToggle = document.getElementById('nl-segment-freq');
       const badge = document.getElementById('nl-badge');
 
       if (price > 90000) {
         warningEl.style.display = 'block';
         contentEl.style.display = 'none';
-        freqToggle.style.display = 'none';
         badge.innerText = "Quote Unavailable";
         badge.className = "nl-fbt-badge nl-badge-standard";
-        return; // Stop processing math, quote is hidden
+        return; 
       } else {
         warningEl.style.display = 'none';
         contentEl.style.display = 'block';
-        freqToggle.style.display = 'flex';
         badge.innerText = "Eligible for 0% FBT";
         badge.className = "nl-fbt-badge nl-badge-exempt";
       }
@@ -656,13 +364,11 @@
       const deferralType = document.querySelector('input[name="nl-deferral"]:checked').value;
       
       const salary = parseFloat(document.getElementById('nl-salary').value) || 0;
-      // Frequency is strictly locked to Monthly
       const payCycles = 12; 
       const hasHecs = document.getElementById('nl-hecs').value === 'yes';
       const hasPhi = document.getElementById('nl-phi').value === 'yes';
 
       const interestRateDec = FIXED_INTEREST_RATE / 100;
-
       const gst = Math.min(price / 11, MAX_GST_CLAIM);
       const financed = price - gst;
       const residualVal = financed * residualPct;
@@ -677,8 +383,6 @@
       if (monthlyRate > 0) {
         pmt = (financed - (residualVal * Math.pow(1 + monthlyRate, -totalMonths))) * 
               (monthlyRate / (1 - Math.pow(1 + monthlyRate, -totalMonths)));
-              
-        // Apply Deferral Math (Advance vs Arrears)
         if (deferralType === 'immediate') {
           pmt = pmt / (1 + monthlyRate); 
         }
@@ -688,8 +392,6 @@
       
       const annualFinance = pmt * 12;
       const totalLeaseAnnual = annualFinance; 
-      
-      // Since price is always <= 90000 and it's always an EV, FBT is ALWAYS exempt.
       const isExempt = true; 
       let preTaxAnnual = totalLeaseAnnual;
       let postTaxAnnual = 0;
@@ -700,7 +402,6 @@
       const taxAfter = calculateIncomeTax(taxableSalaryWithLease, rfba, hasHecs, hasPhi);
 
       const annualTaxSaved = taxBefore - taxAfter;
-
       const takeHomeBefore = (salary - taxBefore) / payCycles;
       const takeHomeAfter = (salary - preTaxAnnual - taxAfter - postTaxAnnual) / payCycles;
       const netOutOfPocket = takeHomeBefore - takeHomeAfter;
@@ -737,16 +438,14 @@
     updateResidualOptions();
     calculateAll();
 
-    // === Contact Form Validation Logic ===
     function validateContactForm() {
       const name = document.getElementById('nl-contact-name').value.trim();
-      const mobile = document.getElementById('nl-contact-mobile').value.trim().replace(/\s+/g, ''); // strip spaces for validation
+      const mobile = document.getElementById('nl-contact-mobile').value.trim().replace(/\s+/g, '');
       const email = document.getElementById('nl-contact-email').value.trim();
       const submitBtn = document.getElementById('nl-submit-btn');
 
-      // Simple validations
       const isNameValid = name.length > 0;
-      const isMobileValid = /^04\d{8}$/.test(mobile); // AU Mobile: starts with 04, 10 digits total
+      const isMobileValid = /^04\d{8}$/.test(mobile); 
       const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
       if (isNameValid && isMobileValid && isEmailValid) {
@@ -760,17 +459,14 @@
       }
     }
 
-    // Attach validation to inputs
     ['nl-contact-name', 'nl-contact-mobile', 'nl-contact-email'].forEach(id => {
       document.getElementById(id).addEventListener('input', validateContactForm);
     });
 
-    // === PDF Generation Logic ===
     document.getElementById('nl-pdf-cust-btn').addEventListener('click', function() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       const logoImg = document.querySelector('.nl-brand-logo');
-
       doc.setFillColor(255, 255, 255);
       doc.rect(0, 0, 210, 45, 'F');
 
@@ -779,7 +475,6 @@
           const imgRatio = logoImg.naturalWidth / logoImg.naturalHeight;
           const targetHeight = 16; 
           const targetWidth = targetHeight * imgRatio; 
-          
           doc.addImage(logoImg, 'PNG', 14, 12, targetWidth, targetHeight); 
         } else {
           doc.setFontSize(22);
@@ -795,11 +490,9 @@
       doc.setFontSize(11);
       doc.setTextColor(100, 116, 139);
       doc.text("Flexible Tailored Finance Solutions", 14, 34);
-
       doc.setDrawColor(140, 215, 247);
       doc.setLineWidth(1);
       doc.line(14, 38, 196, 38);
-
       doc.setFontSize(14);
       doc.setTextColor(28, 28, 28);
       doc.text("Customer Finance Quote", 14, 48);
@@ -815,26 +508,21 @@
       });
 
       const finalY = doc.lastAutoTable.finalY + 12;
-      
       doc.setFillColor(245, 246, 248);
       doc.rect(14, finalY, 182, 35, 'F');
       doc.setTextColor(28, 28, 28);
-      
       doc.setFontSize(12);
       doc.text("Pay Impact Breakdown", 20, finalY + 10);
       doc.setFontSize(11);
       doc.text(`Current Monthly Take-Home Pay: $${Math.round(calcState.takeHomeBefore).toLocaleString()}`, 20, finalY + 20);
       doc.setFontSize(13);
       doc.text(`New Monthly Take-Home Pay: $${Math.round(calcState.takeHomeAfter).toLocaleString()}`, 20, finalY + 30);
-
       doc.setTextColor(22, 101, 52);
       doc.setFontSize(12);
       doc.text(`Estimated Annual Tax Saved: $${Math.round(calcState.annualTaxSaved).toLocaleString()}`, 14, finalY + 50);
-      
       doc.setFontSize(9);
       doc.setTextColor(100, 116, 139);
       doc.text(`*Quote generated at ${calcState.interestRatePct.toFixed(2)}% p.a. interest. Subject to final lender approval.`, 14, finalY + 70);
-
       doc.save("Crestwood_Finance_Customer_Quote.pdf");
     });
 
@@ -842,7 +530,6 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       const logoImg = document.querySelector('.nl-brand-logo');
-
       doc.setFillColor(255, 255, 255);
       doc.rect(0, 0, 210, 45, 'F');
 
@@ -851,7 +538,6 @@
           const imgRatio = logoImg.naturalWidth / logoImg.naturalHeight;
           const targetHeight = 16;
           const targetWidth = targetHeight * imgRatio;
-          
           doc.addImage(logoImg, 'PNG', 14, 12, targetWidth, targetHeight); 
         } else {
           doc.setFontSize(22);
@@ -867,11 +553,9 @@
       doc.setFontSize(11);
       doc.setTextColor(100, 116, 139);
       doc.text("Flexible Tailored Finance Solutions", 14, 34);
-
       doc.setDrawColor(140, 215, 247);
       doc.setLineWidth(1);
       doc.line(14, 38, 196, 38);
-
       doc.setFontSize(14);
       doc.setTextColor(28, 28, 28);
       doc.text("Employer Salary Packaging Schedule", 14, 48);
@@ -894,7 +578,6 @@
       doc.setTextColor(28, 28, 28);
       doc.text(`Monthly Direct Debit to Lender: $${Math.round(calcState.pmt).toLocaleString()}`, 14, empY);
       doc.text(`FBT Status: Exempt (Eligible EV)`, 14, empY + 8);
-
       doc.save("Crestwood_Employer_Schedule.pdf");
     });
   });
