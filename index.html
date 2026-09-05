@@ -21,7 +21,7 @@
     <!-- CRESTWOOD LOGO -->
     <!-- Replace the src with the actual URL from your WordPress Media Library -->
     <img src="CrestwoodGroup_PrimaryLogo_Charcoal-scaled.png" alt="Crestwood Group" class="nl-brand-logo">
-    <p class="nl-subtitle">Flexible Tailored Finance Solutions | Novated Lease Calculator</p>
+    <p class="nl-subtitle">Flexible Tailored Finance Solutions | EV Novated Lease Calculator</p>
   </div>
 
   <div class="nl-layout-grid">
@@ -29,23 +29,10 @@
     <!-- LEFT COLUMN: INPUTS -->
     <div class="nl-form-column">
       <form id="nlForm" onsubmit="event.preventDefault();">
+        
         <!-- Vehicle Section -->
         <div class="nl-card">
           <div class="nl-card-header">🚗 Vehicle Details</div>
-          
-          <div class="nl-input-group">
-            <label class="nl-label">Vehicle Type</label>
-            <div class="nl-segment-control" id="nl-segment-veh">
-              <div class="nl-segment-indicator"></div>
-              <button type="button" class="nl-segment-btn active" data-value="BEV">
-                ⚡ Electric (BEV)
-              </button>
-              <button type="button" class="nl-segment-btn" data-value="ICE">
-                ⛽ Petrol / Diesel
-              </button>
-            </div>
-            <input type="hidden" id="nl-veh-type" value="BEV">
-          </div>
 
           <div class="nl-input-group">
             <label class="nl-label">Vehicle Drive-away Price</label>
@@ -53,7 +40,7 @@
               <span>$</span>
               <input type="number" id="nl-price" value="55000" placeholder="55000">
             </div>
-            <!-- Added GST Note -->
+            <!-- GST Note -->
             <div style="font-size: 11.5px; color: #64748b; margin-top: 6px; font-weight: 500;">* this includes GST and Stamp</div>
           </div>
 
@@ -77,7 +64,7 @@
             </div>
           </div>
 
-          <!-- Added Payment Deferral UI -->
+          <!-- Payment Deferral UI -->
           <div class="nl-input-group" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--brand-border);">
             <label class="nl-label" style="font-size: 14.5px; color: var(--brand-dark); margin-bottom: 2px;">Payment Start</label>
             <div style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Choose when lease payments begin</div>
@@ -135,10 +122,10 @@
           </summary>
           <div class="nl-accordion-content">
             <div class="nl-assumptions-grid">
+              <div><span>Vehicle Type:</span> <strong>Electric (BEV)</strong></div>
               <div><span>Finance Rate:</span> <strong>8.74% p.a.</strong></div>
               <div><span>GST Claim Cap:</span> <strong id="nl-assump-gst">$6,334</strong></div>
               <div><span>Amount Financed:</span> <strong id="nl-assump-financed">$50,000</strong></div>
-              <div><span>LCT Threshold (BEV):</span> <strong>$91,661</strong></div>
             </div>
           </div>
         </details>
@@ -151,60 +138,76 @@
         
         <div class="nl-results-header">
           <div class="nl-fbt-badge" id="nl-badge">Eligible for 0% FBT</div>
+          
+          <div class="nl-segment-control nl-segment-sm" id="nl-segment-freq">
+            <div class="nl-segment-indicator"></div>
+            <button type="button" class="nl-segment-btn" data-value="weekly">Weekly</button>
+            <button type="button" class="nl-segment-btn active" data-value="fortnightly">Fortnightly</button>
+            <button type="button" class="nl-segment-btn" data-value="monthly">Monthly</button>
+          </div>
+          <input type="hidden" id="nl-pay-freq" value="monthly"> <!-- Hardcoded logic uses monthly -->
         </div>
 
-        <div class="nl-hero-card">
-          <div class="nl-hero-label">Net Monthly Out-of-Pocket Cost</div>
-          <div class="nl-hero-value" id="nl-out-of-pocket">$358</div>
+        <!-- NEW: Over $90k Warning Box -->
+        <div id="nl-price-warning" style="display: none; background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 20px; border-radius: 12px; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
+          <strong>* Please note</strong> we can't quote on this calculator for a purchase price above $90,000 due to FBT implications. Please submit an enquiry below and our team will be in touch.
         </div>
 
-        <!-- Take Home Comparison -->
-        <div class="nl-grid-2" style="margin-bottom: 16px;">
-          <div class="nl-res-card" style="background: #ffffff; border: 1px solid #e2e8f0;">
-            <div class="nl-res-label">Current Monthly Take-Home</div>
-            <div class="nl-res-val" id="nl-current-takehome" style="font-size: 18px;">$0</div>
-          </div>
-          <!-- Branded New Take Home Card -->
-          <div class="nl-res-card nl-res-highlight">
-            <div class="nl-res-label" style="color: #1c1c1c; opacity: 0.8;">New Monthly Take-Home</div>
-            <div class="nl-res-val" id="nl-new-takehome" style="font-size: 18px; color: #1c1c1c;">$0</div>
-          </div>
-        </div>
-
-        <div class="nl-summary-grid">
-          <div class="nl-res-card">
-            <div class="nl-res-label">Tax Savings (Yr)</div>
-            <div class="nl-res-val nl-text-success" id="nl-tax-saved">$4,383</div>
+        <!-- WRAPPER: Hides when over 90k -->
+        <div id="nl-results-content">
+          <div class="nl-hero-card">
+            <div class="nl-hero-label">Net Monthly Out-of-Pocket Cost</div>
+            <div class="nl-hero-value" id="nl-out-of-pocket">$358</div>
           </div>
 
-          <div class="nl-res-card">
-            <div class="nl-res-label">Pre-Tax Deduct</div>
-            <div class="nl-res-val" id="nl-pretax-ded">$527</div>
+          <!-- Take Home Comparison -->
+          <div class="nl-grid-2" style="margin-bottom: 16px;">
+            <div class="nl-res-card" style="background: #ffffff; border: 1px solid #e2e8f0;">
+              <div class="nl-res-label">Current Monthly Take-Home</div>
+              <div class="nl-res-val" id="nl-current-takehome" style="font-size: 18px;">$0</div>
+            </div>
+            <!-- Branded New Take Home Card -->
+            <div class="nl-res-card nl-res-highlight">
+              <div class="nl-res-label" style="color: #1c1c1c; opacity: 0.8;">New Monthly Take-Home</div>
+              <div class="nl-res-val" id="nl-new-takehome" style="font-size: 18px; color: #1c1c1c;">$0</div>
+            </div>
           </div>
 
-          <div class="nl-res-card">
-            <div class="nl-res-label">Post-Tax (ECM)</div>
-            <div class="nl-res-val" id="nl-posttax-ded">$0</div>
+          <div class="nl-summary-grid">
+            <div class="nl-res-card">
+              <div class="nl-res-label">Tax Savings (Yr)</div>
+              <div class="nl-res-val nl-text-success" id="nl-tax-saved">$4,383</div>
+            </div>
+
+            <div class="nl-res-card">
+              <div class="nl-res-label">Pre-Tax Deduct</div>
+              <div class="nl-res-val" id="nl-pretax-ded">$527</div>
+            </div>
+
+            <div class="nl-res-card">
+              <div class="nl-res-label">Post-Tax (ECM)</div>
+              <div class="nl-res-val" id="nl-posttax-ded">$0</div>
+            </div>
+
+            <div class="nl-res-card">
+              <div class="nl-res-label">Monthly Pay Impact</div>
+              <div class="nl-res-val" id="nl-takehome-impact">-$358</div>
+            </div>
           </div>
 
-          <div class="nl-res-card">
-            <div class="nl-res-label">Monthly Pay Impact</div>
-            <div class="nl-res-val" id="nl-takehome-impact">-$358</div>
+          <!-- Employer Implications Card -->
+          <div class="nl-card nl-card-employer">
+            <div class="nl-card-header" style="font-size: 14px; margin-bottom: 8px;">🏢 Employer Implications</div>
+            <div class="nl-assumptions-grid">
+              <div><span>Monthly Direct Debit:</span> <strong id="nl-emp-dd">$0</strong></div>
+              <div><span>FBT Status:</span> <strong id="nl-emp-fbt" style="color: #1c1c1c;">Exempt (Eligible EV)</strong></div>
+            </div>
           </div>
-        </div>
 
-        <!-- Employer Implications Card -->
-        <div class="nl-card nl-card-employer">
-          <div class="nl-card-header" style="font-size: 14px; margin-bottom: 8px;">🏢 Employer Implications</div>
-          <div class="nl-assumptions-grid">
-            <div><span>Monthly Direct Debit:</span> <strong id="nl-emp-dd">$0</strong></div>
-            <div><span>FBT Status:</span> <strong id="nl-emp-fbt" style="color: #1c1c1c;">...</strong></div>
+          <div class="nl-pdf-actions">
+            <button id="nl-pdf-cust-btn" class="nl-btn nl-btn-cust">📄 Download Customer Quote</button>
+            <button id="nl-pdf-emp-btn" class="nl-btn nl-btn-emp">📄 Download Employer Schedule</button>
           </div>
-        </div>
-
-        <div class="nl-pdf-actions">
-          <button id="nl-pdf-cust-btn" class="nl-btn nl-btn-cust">📄 Download Customer Quote</button>
-          <button id="nl-pdf-emp-btn" class="nl-btn nl-btn-emp">📄 Download Employer Schedule</button>
         </div>
       </div>
 
@@ -357,6 +360,10 @@
     white-space: nowrap; /* Prevent words wrapping in pill */
   }
   .nl-segment-btn.active { color: var(--brand-dark); } 
+
+  .nl-segment-sm { padding: 4px; border-radius: 30px; flex-shrink: 0; }
+  .nl-segment-sm .nl-segment-indicator { top: 4px; bottom: 4px; border-radius: 30px; }
+  .nl-segment-sm .nl-segment-btn { padding: 6px 14px; font-size: 12.5px; border-radius: 30px; }
 
   /* Fixed Inputs */
   .nl-input {
@@ -521,6 +528,10 @@
       font-size: 13px;
       padding: 8px 12px; 
     }
+    .nl-segment-sm .nl-segment-btn {
+      font-size: 11.5px;
+      padding: 6px 10px; 
+    }
     .nl-res-val {
       font-size: 18px;
     }
@@ -534,7 +545,6 @@
   document.addEventListener("DOMContentLoaded", function() {
     // ATO Variables & Hardcoded Values (FY2026-27)
     const MAX_GST_CLAIM = 6334;
-    const LCT_THRESHOLD = 91661;
     const FIXED_INTEREST_RATE = 8.74; 
     
     // Residual Options Matrix
@@ -584,44 +594,6 @@
       }
     }
 
-    function updateSegmentIndicator(containerId) {
-      const container = document.getElementById(containerId);
-      const activeBtn = container.querySelector('.nl-segment-btn.active');
-      const indicator = container.querySelector('.nl-segment-indicator');
-      
-      if (activeBtn && indicator) {
-        const left = activeBtn.offsetLeft;
-        const width = activeBtn.offsetWidth;
-        
-        indicator.style.transform = `translateX(${left}px)`;
-        indicator.style.width = `${width}px`;
-      }
-    }
-
-    function attachSegmentListeners(containerId, hiddenInputId) {
-      const container = document.getElementById(containerId);
-      const buttons = container.querySelectorAll('.nl-segment-btn');
-      const hiddenInput = document.getElementById(hiddenInputId);
-      
-      buttons.forEach(btn => {
-        btn.addEventListener('click', function() {
-          buttons.forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          hiddenInput.value = this.getAttribute('data-value');
-          updateSegmentIndicator(containerId);
-          calculateAll();
-        });
-      });
-
-      setTimeout(() => updateSegmentIndicator(containerId), 50);
-    }
-
-    attachSegmentListeners('nl-segment-veh', 'nl-veh-type');
-
-    window.addEventListener('resize', () => {
-      updateSegmentIndicator('nl-segment-veh');
-    });
-
     function calculateIncomeTax(taxableIncome, rfba, hasHecs, hasPhi) {
       let tax = 0;
       if (taxableIncome > 190000) tax = 51370 + (taxableIncome - 190000) * 0.45;
@@ -654,15 +626,37 @@
     }
 
     function calculateAll() {
-      const vehType = document.getElementById('nl-veh-type').value;
-      const isBEV = vehType === 'BEV';
+      // Hardcoded to BEV
+      const isBEV = true; 
       const price = parseFloat(document.getElementById('nl-price').value) || 0;
+      
+      // DOM Elements for $90k Guardrail
+      const warningEl = document.getElementById('nl-price-warning');
+      const contentEl = document.getElementById('nl-results-content');
+      const freqToggle = document.getElementById('nl-segment-freq');
+      const badge = document.getElementById('nl-badge');
+
+      if (price > 90000) {
+        warningEl.style.display = 'block';
+        contentEl.style.display = 'none';
+        freqToggle.style.display = 'none';
+        badge.innerText = "Quote Unavailable";
+        badge.className = "nl-fbt-badge nl-badge-standard";
+        return; // Stop processing math, quote is hidden
+      } else {
+        warningEl.style.display = 'none';
+        contentEl.style.display = 'block';
+        freqToggle.style.display = 'flex';
+        badge.innerText = "Eligible for 0% FBT";
+        badge.className = "nl-fbt-badge nl-badge-exempt";
+      }
+
       const termYears = parseInt(document.getElementById('nl-term').value) || 5;
       const residualPct = (parseInt(document.getElementById('nl-residual').value) || 0) / 100;
       const deferralType = document.querySelector('input[name="nl-deferral"]:checked').value;
       
       const salary = parseFloat(document.getElementById('nl-salary').value) || 0;
-      // Frequency is strictly locked to Monthly now
+      // Frequency is strictly locked to Monthly
       const payCycles = 12; 
       const hasHecs = document.getElementById('nl-hecs').value === 'yes';
       const hasPhi = document.getElementById('nl-phi').value === 'yes';
@@ -695,17 +689,11 @@
       const annualFinance = pmt * 12;
       const totalLeaseAnnual = annualFinance; 
       
-      const isExempt = isBEV && price < LCT_THRESHOLD;
+      // Since price is always <= 90000 and it's always an EV, FBT is ALWAYS exempt.
+      const isExempt = true; 
       let preTaxAnnual = totalLeaseAnnual;
       let postTaxAnnual = 0;
-      let rfba = 0;
-
-      if (!isExempt) {
-        postTaxAnnual = price * 0.20; 
-        preTaxAnnual = Math.max(0, totalLeaseAnnual - postTaxAnnual);
-      } else {
-        rfba = price * 0.20 * 1.8868;
-      }
+      let rfba = price * 0.20 * 1.8868;
 
       const taxBefore = calculateIncomeTax(salary, 0, hasHecs, hasPhi);
       const taxableSalaryWithLease = Math.max(0, salary - preTaxAnnual);
@@ -722,17 +710,6 @@
         totalLeaseAnnual, isExempt, preTaxAnnual, postTaxAnnual, annualTaxSaved, netOutOfPocket, 
         residualVal, takeHomeBefore, takeHomeAfter, pmt, deferralType
       };
-
-      const badge = document.getElementById('nl-badge');
-      if (isExempt) {
-        badge.innerText = "Eligible for 0% FBT";
-        badge.className = "nl-fbt-badge nl-badge-exempt";
-        document.getElementById('nl-emp-fbt').innerText = "Exempt (Eligible EV)";
-      } else {
-        badge.innerText = "Standard FBT Applies";
-        badge.className = "nl-fbt-badge nl-badge-standard";
-        document.getElementById('nl-emp-fbt').innerText = "Offset to Nil via ECM";
-      }
 
       document.getElementById('nl-current-takehome').innerText = `$${Math.round(takeHomeBefore).toLocaleString()}`;
       document.getElementById('nl-new-takehome').innerText = `$${Math.round(takeHomeAfter).toLocaleString()}`;
@@ -831,7 +808,7 @@
         startY: 54,
         theme: 'plain',
         body: [
-          ['Vehicle Type:', calcState.isBEV ? 'Electric Vehicle (BEV)' : 'Petrol / Diesel', 'Gross Salary:', `$${calcState.salary.toLocaleString()}`],
+          ['Vehicle Type:', 'Electric Vehicle (BEV)', 'Gross Salary:', `$${calcState.salary.toLocaleString()}`],
           ['Drive-Away Price:', `$${calcState.price.toLocaleString()}`, 'Lease Term:', `${calcState.termYears * 12} Months`],
           ['Amount Financed:', `$${Math.round(calcState.financed).toLocaleString()}`, 'Payment Start:', calcState.deferralType === 'immediate' ? 'Immediate' : '1-Month Deferral']
         ]
@@ -916,7 +893,7 @@
       doc.setFontSize(12);
       doc.setTextColor(28, 28, 28);
       doc.text(`Monthly Direct Debit to Lender: $${Math.round(calcState.pmt).toLocaleString()}`, 14, empY);
-      doc.text(`FBT Status: ${calcState.isExempt ? 'Exempt (Eligible EV)' : 'Offset to Nil via ECM'}`, 14, empY + 8);
+      doc.text(`FBT Status: Exempt (Eligible EV)`, 14, empY + 8);
 
       doc.save("Crestwood_Employer_Schedule.pdf");
     });
