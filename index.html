@@ -17,11 +17,18 @@
     <p class="nl-subtitle">Flexible Tailored Finance Solutions | EV Novated Lease Calculator</p>
   </div>
 
+  <!-- Top EV Notice Banner -->
+  <div class="nl-ev-notice-banner">
+    ⚡ <strong>Note:</strong> We can only finance full EVs only.
+  </div>
+
   <div class="nl-layout-grid">
+    <!-- LEFT COLUMN: INPUTS -->
     <div class="nl-form-column">
       <form id="nlForm" onsubmit="event.preventDefault();">
         <div class="nl-card">
           <div class="nl-card-header">🚗 Vehicle Details</div>
+
           <div class="nl-input-group">
             <label class="nl-label">Vehicle Drive-away Price</label>
             <div class="nl-input-currency">
@@ -30,6 +37,7 @@
             </div>
             <div style="font-size: 11.5px; color: #64748b; margin-top: 6px; font-weight: 500;">* this includes GST and Stamp</div>
           </div>
+
           <div class="nl-grid-2">
             <div class="nl-input-group">
               <label class="nl-label">Lease Term</label>
@@ -41,29 +49,30 @@
                 <option value="5" selected>60 Months</option>
               </select>
             </div>
+
             <div class="nl-input-group">
               <label class="nl-label">Residual %</label>
               <select id="nl-residual" class="nl-input"></select>
             </div>
           </div>
+
+          <!-- Fixed Payment Start Card -->
           <div class="nl-input-group" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--brand-border);">
-            <label class="nl-label" style="font-size: 14.5px; color: var(--brand-dark); margin-bottom: 2px;">Payment Start</label>
-            <div style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Choose when lease payments begin</div>
-            <div class="nl-radio-group">
-              <label class="nl-radio-label">
-                <input type="radio" name="nl-deferral" value="immediate" onchange="calculateAll()" checked>
-                <span>Start immediately (no deferral)</span>
-              </label>
-              <label class="nl-radio-label">
-                <input type="radio" name="nl-deferral" value="deferred" onchange="calculateAll()">
-                <span>Start in 1 month (1-month deferral)</span>
-              </label>
+            <label class="nl-label" style="font-size: 14.5px; color: var(--brand-dark); margin-bottom: 6px;">Payment Timing</label>
+            <div class="nl-payment-fixed-pill">
+              <span class="nl-fixed-icon">📅</span>
+              <div class="nl-fixed-text">
+                <strong>Payment starts in 1 month</strong>
+                <span>(Standard 1-month deferral included)</span>
+              </div>
             </div>
           </div>
         </div>
 
+        <!-- Income & Tax Section -->
         <div class="nl-card">
           <div class="nl-card-header">💼 Income & Deductions</div>
+          
           <div class="nl-input-group">
             <label class="nl-label">Annual Gross Salary</label>
             <div class="nl-input-currency">
@@ -71,6 +80,7 @@
               <input type="number" id="nl-salary" value="110000" placeholder="110000">
             </div>
           </div>
+
           <div class="nl-grid-2">
             <div class="nl-input-group">
               <label class="nl-label">HELP/HECS Debt?</label>
@@ -79,6 +89,7 @@
                 <option value="yes">Yes</option>
               </select>
             </div>
+
             <div class="nl-input-group">
               <label class="nl-label">Private Health?</label>
               <select id="nl-phi" class="nl-input">
@@ -89,6 +100,7 @@
           </div>
         </div>
 
+        <!-- Collapsible Financial Assumptions -->
         <details class="nl-card nl-accordion">
           <summary class="nl-summary">
             <div class="nl-summary-title"><span>⚙️ Financial Assumptions & Rules</span></div>
@@ -97,6 +109,7 @@
           <div class="nl-accordion-content">
             <div class="nl-assumptions-grid">
               <div><span>Vehicle Type:</span> <strong>Electric (BEV)</strong></div>
+              <div><span>Payment Start:</span> <strong>1-Month Deferral</strong></div>
               <div><span>Finance Rate:</span> <strong>8.74% p.a.</strong></div>
               <div><span>GST Claim Cap:</span> <strong id="nl-assump-gst">$6,353</strong></div>
               <div><span>Amount Financed:</span> <strong id="nl-assump-financed">$50,000</strong></div>
@@ -106,19 +119,23 @@
       </form>
     </div>
 
+    <!-- RIGHT COLUMN: RESULTS -->
     <div class="nl-results-column">
       <div class="nl-results-container">
         <div class="nl-results-header">
           <div class="nl-fbt-badge" id="nl-badge">Eligible for 0% FBT</div>
         </div>
+
         <div id="nl-price-warning" style="display: none; background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 20px; border-radius: 12px; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
           <strong>* Please note</strong> we can't quote on this calculator for a purchase price above $90,000 due to FBT implications. Please submit an enquiry below and our team will be in touch.
         </div>
+
         <div id="nl-results-content">
           <div class="nl-hero-card">
             <div class="nl-hero-label">Net Monthly Out-of-Pocket Cost</div>
             <div class="nl-hero-value" id="nl-out-of-pocket">$358</div>
           </div>
+
           <div class="nl-grid-2" style="margin-bottom: 16px;">
             <div class="nl-res-card" style="background: #ffffff; border: 1px solid #e2e8f0;">
               <div class="nl-res-label">Current Monthly Take-Home</div>
@@ -129,24 +146,29 @@
               <div class="nl-res-val" id="nl-new-takehome" style="font-size: 18px; color: #1c1c1c;">$0</div>
             </div>
           </div>
+
           <div class="nl-summary-grid">
             <div class="nl-res-card">
               <div class="nl-res-label">Tax Savings (Yr)</div>
               <div class="nl-res-val nl-text-success" id="nl-tax-saved">$4,383</div>
             </div>
+
             <div class="nl-res-card">
               <div class="nl-res-label">Pre-Tax Deduct</div>
               <div class="nl-res-val" id="nl-pretax-ded">$527</div>
             </div>
+
             <div class="nl-res-card">
               <div class="nl-res-label">Post-Tax (ECM)</div>
               <div class="nl-res-val" id="nl-posttax-ded">$0</div>
             </div>
+
             <div class="nl-res-card">
               <div class="nl-res-label">Monthly Pay Impact</div>
               <div class="nl-res-val" id="nl-takehome-impact">-$358</div>
             </div>
           </div>
+
           <div class="nl-card nl-card-employer">
             <div class="nl-card-header" style="font-size: 14px; margin-bottom: 8px;">🏢 Employer Implications</div>
             <div class="nl-assumptions-grid">
@@ -154,6 +176,7 @@
               <div><span>FBT Status:</span> <strong id="nl-emp-fbt" style="color: #1c1c1c;">Exempt (Eligible EV)</strong></div>
             </div>
           </div>
+
           <div class="nl-pdf-actions">
             <button id="nl-pdf-cust-btn" class="nl-btn nl-btn-cust">📄 Download Customer Quote</button>
             <button id="nl-pdf-emp-btn" class="nl-btn nl-btn-emp">📄 Download Employer Schedule</button>
@@ -161,11 +184,13 @@
         </div>
       </div>
 
+      <!-- Contact Submission Form with Validations -->
       <div class="nl-card nl-card-contact" style="margin-top: 16px; border: 1px solid var(--brand-border); background: #ffffff;">
         <div class="nl-card-header" style="font-size: 15px; margin-bottom: 4px;">📩 Ready to proceed?</div>
         <div style="font-size: 12px; color: #64748b; margin-bottom: 14px; line-height: 1.4;">
           Submit your details below and a finance specialist will get back to you in 1-2 business hours.
         </div>
+        
         <div class="nl-input-group">
           <input type="text" id="nl-contact-name" class="nl-input" placeholder="Full Name">
         </div>
@@ -175,6 +200,7 @@
         <div class="nl-input-group" style="margin-bottom: 16px;">
           <input type="email" id="nl-contact-email" class="nl-input" placeholder="Email Address">
         </div>
+        
         <button type="button" id="nl-submit-btn" class="nl-btn nl-btn-cust" style="width: 100%; font-size: 15px; padding: 16px; opacity: 0.5; cursor: not-allowed;" disabled onclick="alert('Enquiry functionality will need to be securely connected by a web developer to send email directly.')">Submit Enquiry</button>
       </div>
 
@@ -192,31 +218,127 @@
     --brand-card-bg: #f5f6f8;
     --brand-border: #e2e8f0;
   }
+
   body { margin: 0; padding: 0; background-color: #f1f5f9; }
-  .nl-calculator { font-family: 'Poppins', sans-serif; max-width: 1180px; margin: 0 auto; background: #ffffff; border: none; border-radius: 16px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); color: var(--brand-dark); box-sizing: border-box; }
-  .nl-branding-header { border-bottom: 2px solid var(--brand-border); padding-bottom: 16px; margin-bottom: 24px; }
+
+  .nl-calculator {
+    font-family: 'Poppins', sans-serif;
+    max-width: 1180px; 
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    color: var(--brand-dark);
+    box-sizing: border-box;
+  }
+  
+  .nl-branding-header { border-bottom: 2px solid var(--brand-border); padding-bottom: 16px; margin-bottom: 20px; }
   .nl-brand-logo { max-height: 65px; width: auto; max-width: 100%; display: block; margin-bottom: 10px; }
   .nl-subtitle { margin: 0; color: #64748b; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Top EV Notice Banner */
+  .nl-ev-notice-banner {
+    background: #e0f2fe;
+    border: 1px solid #bae6fd;
+    color: #0369a1;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   .nl-layout-grid { display: grid; grid-template-columns: 1fr; gap: 28px; }
   @media(min-width: 860px) { .nl-layout-grid { grid-template-columns: 1.2fr 1fr; align-items: start; } }
-  .nl-card { background: var(--brand-card-bg); border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-radius: 16px; padding: 18px; margin-bottom: 16px; }
+
+  .nl-card {
+    background: var(--brand-card-bg);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+  }
   .nl-card-header { font-weight: 600; font-size: 16px; margin-bottom: 14px; color: var(--brand-dark); }
   .nl-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media(max-width: 600px) { .nl-grid-2 { grid-template-columns: 1fr; gap: 16px; } }
+
   .nl-input-group { margin-bottom: 14px; }
   .nl-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #475569; }
-  .nl-radio-group { display: flex; flex-direction: column; gap: 10px; }
-  .nl-radio-label { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 500; color: var(--brand-dark); cursor: pointer; }
-  .nl-radio-label input[type="radio"] { accent-color: var(--brand-light-blue); width: 18px; height: 18px; cursor: pointer; margin: 0; }
-  .nl-input { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; font-weight: 500; box-sizing: border-box; background-color: #ffffff; color: var(--brand-dark); height: 44px; font-family: inherit; }
+
+  /* Fixed Payment Timing Pill */
+  .nl-payment-fixed-pill {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .nl-fixed-icon { font-size: 20px; }
+  .nl-fixed-text strong { display: block; font-size: 13.5px; color: var(--brand-dark); font-weight: 600; }
+  .nl-fixed-text span { font-size: 11.5px; color: #64748b; }
+
+  .nl-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    color: var(--brand-dark);
+    height: 44px;
+    font-family: inherit;
+  }
   .nl-input:focus { outline: none; border-color: var(--brand-light-blue); box-shadow: 0 0 0 3px rgba(140, 215, 247, 0.2); }
-  select.nl-input { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYzFjMWMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4="); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; cursor: pointer; }
-  .nl-input-currency { display: flex; align-items: center; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0 14px; height: 44px; box-sizing: border-box; transition: all 0.2s ease; }
+
+  select.nl-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYzFjMWMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSI+PC9wb2x5bGluZT48L3N2Zz4=");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 40px; 
+    cursor: pointer;
+  }
+
+  .nl-input-currency {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 0 14px;
+    height: 44px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+  }
   .nl-input-currency:focus-within { border-color: var(--brand-light-blue); box-shadow: 0 0 0 3px rgba(140, 215, 247, 0.2); }
   .nl-input-currency span { color: #64748b; font-weight: 600; font-size: 15px; margin-right: 6px; user-select: none; }
-  .nl-input-currency input { width: 100%; border: none !important; outline: none !important; background: transparent !important; padding: 0 !important; margin: 0 !important; font-size: 15px; font-family: inherit; font-weight: 500; color: var(--brand-dark); box-shadow: none !important; }
+  .nl-input-currency input {
+    width: 100%;
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 15px;
+    font-family: inherit;
+    font-weight: 500;
+    color: var(--brand-dark);
+    box-shadow: none !important;
+  }
+
   input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   input[type=number] { -moz-appearance: textfield; }
+
   .nl-accordion summary { cursor: pointer; font-size: 14px; display: flex; justify-content: space-between; align-items: center; list-style: none; user-select: none; }
   .nl-accordion summary:hover .nl-summary-action { opacity: 0.7; }
   .nl-accordion summary::-webkit-details-marker { display: none; }
@@ -225,33 +347,69 @@
   .nl-summary-action { font-size: 13px; font-weight: 600; color: var(--brand-dark); transition: all 0.2s; }
   .nl-assumptions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; color: #475569; }
   .nl-assumptions-grid strong { color: var(--brand-dark); }
-  .nl-results-container { background: #f8fafc; border: 1px solid var(--brand-border); border-radius: 16px; padding: 24px; margin-top: 0; }
+
+  .nl-results-container { 
+    background: #f8fafc; 
+    border: 1px solid var(--brand-border);
+    border-radius: 16px; 
+    padding: 24px; 
+  }
   .nl-results-header { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; margin-bottom: 16px; }
   .nl-fbt-badge { padding: 7px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
   .nl-badge-exempt { background: #dcfce7; color: #166534; }
   .nl-badge-standard { background: #fee2e2; color: #991b1b; }
-  .nl-hero-card { background: var(--brand-dark); color: #ffffff; border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+  .nl-hero-card { 
+    background: var(--brand-dark); 
+    color: #ffffff; 
+    border-radius: 16px; 
+    padding: 24px; 
+    text-align: center; 
+    margin-bottom: 16px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
   .nl-hero-label { font-size: 13px; font-weight: 500; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
   .nl-hero-value { font-size: 42px; font-weight: 800; margin-top: 4px; color: var(--brand-light-blue); }
+
   .nl-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .nl-res-card { background: #ffffff; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--brand-border); }
   .nl-res-highlight { background: var(--brand-light-blue); border: none; box-shadow: 0 4px 15px rgba(140, 215, 247, 0.4); }
   .nl-res-label { font-size: 12.5px; color: #64748b; margin-bottom: 6px; font-weight: 500; }
   .nl-res-val { font-size: 22px; font-weight: 700; color: var(--brand-dark); }
   .nl-text-success { color: #166534 !important; }
-  .nl-card-employer { background: #ffffff; border-top: 4px solid var(--brand-light-blue); border-left: 1px solid var(--brand-border); border-right: 1px solid var(--brand-border); border-bottom: 1px solid var(--brand-border); margin-top: 20px; margin-bottom: 20px; }
+
+  .nl-card-employer {
+    background: #ffffff;
+    border-top: 4px solid var(--brand-light-blue);
+    border-left: 1px solid var(--brand-border);
+    border-right: 1px solid var(--brand-border);
+    border-bottom: 1px solid var(--brand-border);
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
   .nl-pdf-actions { display: grid; grid-template-columns: 1fr; gap: 12px; }
-  .nl-btn { padding: 14px; border: none; border-radius: 30px; font-weight: 600; font-size: 14px; font-family: inherit; cursor: pointer; transition: transform 0.2s ease, opacity 0.2s ease; }
+  .nl-btn { 
+    padding: 14px; 
+    border: none; 
+    border-radius: 30px; 
+    font-weight: 600; 
+    font-size: 14px; 
+    font-family: inherit;
+    cursor: pointer; 
+    transition: transform 0.2s ease, opacity 0.2s ease; 
+  }
   .nl-btn:hover { transform: translateY(-1px); opacity: 0.95; }
   .nl-btn-cust { background: var(--brand-light-blue); color: var(--brand-dark); }
   .nl-btn-emp { background: var(--brand-dark); color: #ffffff; }
   .nl-btn:disabled { transform: none; opacity: 0.5; cursor: not-allowed; }
-  .nl-disclaimer { margin-top: 24px; font-size: 11px; color: #64748b; line-height: 1.6; padding: 16px; background: #ffffff; border-radius: 12px; border: 1px solid var(--brand-border);}
+
+  .nl-disclaimer { margin-top: 24px; font-size: 11px; color: #64748b; line-height: 1.6; padding: 16px; background: #ffffff; border-radius: 12px; border: 1px solid var(--brand-border); }
   .nl-disclaimer strong { color: var(--brand-dark); }
+
   @media(max-width: 600px) {
     .nl-calculator { padding: 16px; }
     .nl-results-container { padding: 16px; }
-    .nl-branding-header h2 { font-size: 24px; }
     .nl-hero-value { font-size: 36px; }
     .nl-res-val { font-size: 18px; }
     .nl-summary-grid { grid-template-columns: 1fr; }
@@ -361,7 +519,9 @@
 
       const termYears = parseInt(document.getElementById('nl-term').value) || 5;
       const residualPct = (parseInt(document.getElementById('nl-residual').value) || 0) / 100;
-      const deferralType = document.querySelector('input[name="nl-deferral"]:checked').value;
+      
+      // Permanently set to 1-month deferral as requested
+      const deferralType = 'deferred';
       
       const salary = parseFloat(document.getElementById('nl-salary').value) || 0;
       const payCycles = 12; 
@@ -381,11 +541,9 @@
       
       let pmt = 0;
       if (monthlyRate > 0) {
+        // Standard Arrears (1-month deferred) formula
         pmt = (financed - (residualVal * Math.pow(1 + monthlyRate, -totalMonths))) * 
               (monthlyRate / (1 - Math.pow(1 + monthlyRate, -totalMonths)));
-        if (deferralType === 'immediate') {
-          pmt = pmt / (1 + monthlyRate); 
-        }
       } else {
         pmt = (financed - residualVal) / totalMonths;
       }
@@ -503,7 +661,7 @@
         body: [
           ['Vehicle Type:', 'Electric Vehicle (BEV)', 'Gross Salary:', `$${calcState.salary.toLocaleString()}`],
           ['Drive-Away Price:', `$${calcState.price.toLocaleString()}`, 'Lease Term:', `${calcState.termYears * 12} Months`],
-          ['Amount Financed:', `$${Math.round(calcState.financed).toLocaleString()}`, 'Payment Start:', calcState.deferralType === 'immediate' ? 'Immediate' : '1-Month Deferral']
+          ['Amount Financed:', `$${Math.round(calcState.financed).toLocaleString()}`, 'Payment Start:', '1-Month Deferral']
         ]
       });
 
