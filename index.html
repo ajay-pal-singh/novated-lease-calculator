@@ -421,12 +421,13 @@
     const MAX_GST_CLAIM = 6353;
     const FIXED_INTEREST_RATE = 8.74; 
     
+    // Updated Object Matrix for Compliant Residuals
     const RESIDUAL_OPTIONS = {
-      1: [0, 10, 20, 30, 40, 50],
-      2: [0, 10, 20, 30, 40, 50],
-      3: [0, 10, 20, 30, 40, 50],
-      4: [0, 10, 20, 30, 40, 45],
-      5: [0, 10, 20, 30, 40]
+      1: [{ val: 65.63, label: "Minimum (65.63%)" }, { val: 70, label: "70%" }],
+      2: [{ val: 56.25, label: "Minimum (56.25%)" }, { val: 60, label: "60%" }],
+      3: [{ val: 46.88, label: "Minimum (46.88%)" }, { val: 50, label: "50%" }],
+      4: [{ val: 37.50, label: "Minimum (37.50%)" }, { val: 40, label: "40%" }, { val: 50, label: "50%" }],
+      5: [{ val: 28.13, label: "Minimum (28.13%)" }, { val: 30, label: "30%" }, { val: 40, label: "40%" }, { val: 50, label: "50%" }]
     };
 
     let calcState = {};
@@ -446,24 +447,26 @@
     function updateResidualOptions() {
       const term = parseInt(document.getElementById('nl-term').value) || 5;
       const resSelect = document.getElementById('nl-residual');
-      const currentVal = resSelect.value;
+      const currentVal = parseFloat(resSelect.value); // Parse as float for comparison
       
-      const options = RESIDUAL_OPTIONS[term] || [0];
+      const options = RESIDUAL_OPTIONS[term];
       resSelect.innerHTML = '';
       
       let hasCurrentVal = false;
       options.forEach(opt => {
           const optionEl = document.createElement('option');
-          optionEl.value = opt;
-          optionEl.innerText = opt + '%';
+          optionEl.value = opt.val;
+          optionEl.innerText = opt.label;
           resSelect.appendChild(optionEl);
-          if(parseInt(currentVal) === opt) hasCurrentVal = true;
+          
+          if(currentVal === opt.val) hasCurrentVal = true;
       });
       
-      if (hasCurrentVal && currentVal !== '') {
+      if (hasCurrentVal && !isNaN(currentVal)) {
           resSelect.value = currentVal;
       } else {
-          resSelect.value = options[options.length - 1]; 
+          // Default to the ATO Minimum (first option)
+          resSelect.value = options[0].val; 
       }
     }
 
@@ -518,9 +521,10 @@
       }
 
       const termYears = parseInt(document.getElementById('nl-term').value) || 5;
-      const residualPct = (parseInt(document.getElementById('nl-residual').value) || 0) / 100;
       
-      // Permanently set to 1-month deferral as requested
+      // Updated to parseFloat for precise ATO minimum decimals
+      const residualPct = (parseFloat(document.getElementById('nl-residual').value) || 0) / 100;
+      
       const deferralType = 'deferred';
       
       const salary = parseFloat(document.getElementById('nl-salary').value) || 0;
@@ -541,7 +545,6 @@
       
       let pmt = 0;
       if (monthlyRate > 0) {
-        // Standard Arrears (1-month deferred) formula
         pmt = (financed - (residualVal * Math.pow(1 + monthlyRate, -totalMonths))) * 
               (monthlyRate / (1 - Math.pow(1 + monthlyRate, -totalMonths)));
       } else {
