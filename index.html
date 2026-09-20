@@ -421,13 +421,13 @@
     const MAX_GST_CLAIM = 6353;
     const FIXED_INTEREST_RATE = 8.74; 
     
-    // Updated Object Matrix for Compliant Residuals
+    // Updated Object Matrix: Removed 50% from 48 and 60 months
     const RESIDUAL_OPTIONS = {
       1: [{ val: 65.63, label: "Minimum (65.63%)" }, { val: 70, label: "70%" }],
       2: [{ val: 56.25, label: "Minimum (56.25%)" }, { val: 60, label: "60%" }],
       3: [{ val: 46.88, label: "Minimum (46.88%)" }, { val: 50, label: "50%" }],
-      4: [{ val: 37.50, label: "Minimum (37.50%)" }, { val: 40, label: "40%" }, { val: 50, label: "50%" }],
-      5: [{ val: 28.13, label: "Minimum (28.13%)" }, { val: 30, label: "30%" }, { val: 40, label: "40%" }, { val: 50, label: "50%" }]
+      4: [{ val: 37.50, label: "Minimum (37.50%)" }, { val: 40, label: "40%" }],
+      5: [{ val: 28.13, label: "Minimum (28.13%)" }, { val: 30, label: "30%" }, { val: 40, label: "40%" }]
     };
 
     let calcState = {};
@@ -447,7 +447,7 @@
     function updateResidualOptions() {
       const term = parseInt(document.getElementById('nl-term').value) || 5;
       const resSelect = document.getElementById('nl-residual');
-      const currentVal = parseFloat(resSelect.value); // Parse as float for comparison
+      const currentVal = parseFloat(resSelect.value); 
       
       const options = RESIDUAL_OPTIONS[term];
       resSelect.innerHTML = '';
@@ -465,7 +465,6 @@
       if (hasCurrentVal && !isNaN(currentVal)) {
           resSelect.value = currentVal;
       } else {
-          // Default to the ATO Minimum (first option)
           resSelect.value = options[0].val; 
       }
     }
@@ -521,8 +520,6 @@
       }
 
       const termYears = parseInt(document.getElementById('nl-term').value) || 5;
-      
-      // Updated to parseFloat for precise ATO minimum decimals
       const residualPct = (parseFloat(document.getElementById('nl-residual').value) || 0) / 100;
       
       const deferralType = 'deferred';
